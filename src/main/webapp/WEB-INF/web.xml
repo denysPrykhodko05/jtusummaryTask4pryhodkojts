@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app>
+  <display-name>Archetype Created Web Application</display-name>
+
+  <resource-ref>
+    <description>postgreSQL Datasource example</description>
+    <res-ref-name>jdbc/mysql</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+
+  !-- Start page filter -->
+  <filter>
+    <filter-name>LoginSessionFilter</filter-name>
+    <filter-class>ua.nure.prykhodko.filter.LoginSessionFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>LoginSessionFilter</filter-name>
+    <url-pattern>/</url-pattern>
+  </filter-mapping>
+
+  <!-- Login servlet -->
+  <servlet>
+    <servlet-name>LoginServlet</servlet-name>
+    <servlet-class>ua.nure.prykhodko.servlet.LoginPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>LoginServlet</servlet-name>
+    <url-pattern>/login</url-pattern>
+  </servlet-mapping>
+
+  <resource-ref>
+    <description>DB Connection</description>
+    <res-ref-name>jdbc/mysql</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+
+</web-app>
