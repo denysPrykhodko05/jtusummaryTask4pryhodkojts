@@ -28,7 +28,7 @@ public class ConnectionPool {
         Connection c = null;
         try {
             ctx = new InitialContext();
-            DataSource ds = (DataSource)ctx.lookup("java:comp/env/");
+            DataSource ds = (DataSource)new InitialContext().lookup("java:/comp/env/jdbc/mysql");
             c = ds.getConnection();
         } catch (NamingException e) {
             e.printStackTrace();
