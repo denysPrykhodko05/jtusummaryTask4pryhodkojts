@@ -27,52 +27,5 @@ public abstract class AbstractController<E, K> {
     public abstract boolean addEntity(E entity);
 
     // Закрытие PrepareStatement
-    public void closePrepareStatement(Statement stmt) {
-        if (stmt != null) {
-            try {
-                stmt.close();
-            } catch (SQLException e) {
-                LOG.error(Messages.ERR_CANNOT_CLOSE_STATMENT + e);
-            }
-        }
-    }
 
-    // Закрытие ResultSet
-    public void closeResultSet(ResultSet rs){
-        if (rs!=null){
-            try{
-                rs.close();
-            }catch (SQLException e){
-                LOG.error(Messages.ERR_CANNOT_CLOSE_RESULTSET + e);
-            }
-        }
-    }
-
-    // Закрытие Connection
-    public  void closeConnection(Connection connection){
-        if(connection!=null){
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                LOG.error(Messages.ERR_CANNOT_CLOSE_CONNECTION + e);
-            }
-        }
-    }
-
-    // Закрытие PrepareStatement,Connection, ResultSet
-    public void close(Connection con, Statement stmt, ResultSet rs){
-        closeConnection(con);
-        closePrepareStatement(stmt);
-        closeResultSet(rs);
-    }
-
-    public void rollback(Connection con){
-        if (con!=null){
-            try {
-                con.rollback();
-            } catch (SQLException e) {
-                LOG.error(Messages.ERR_CANNOT_ROLLBACK_TRANSACTION + e);
-            }
-        }
-    }
 }

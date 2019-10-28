@@ -1,8 +1,9 @@
 package ua.nure.prykhodko.dao.SqlDAO;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
+
 import org.apache.log4j.Logger;
+import ua.nure.prykhodko.exception.Messages;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -11,8 +12,24 @@ import javax.sql.DataSource;
 
 public class ConnectionPool {
     private static final Logger LOG = Logger.getLogger(ConnectionPool.class);
+    private Connection connection = null;
+    private Statement statement=null;
+
+    private static final String login = "root";
+    private static final String password= "";
+    private static final String url = "jdbc:mysql://localhost:3306/mysql?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+
     private ConnectionPool(){
-        //private constructor
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(url, login, password);
+            statement = connection.prepareStatement("USE  railway_ticket_office");
+            ((PreparedStatement) statement).execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private static ConnectionPool instance = null;
@@ -24,17 +41,57 @@ public class ConnectionPool {
     }
 
     public Connection getConnection(){
-        Context ctx;
-        Connection c = null;
-        try {
-            ctx = new InitialContext();
-            DataSource ds = (DataSource)new InitialContext().lookup("java:/comp/env/jdbc/mysql");
-            c = ds.getConnection();
-        } catch (NamingException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return c;
+        return connection;
     }
+
+    public void closePrepareStatement(Statement stmt) {
+        if (stmt != null) {
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                LOG.error(Messages.ERR_CANNOT_CLOSE_STATMENT + e);
+            }
+        }
+    }
+
+    // Закрытие ResultSet
+    public void closeResultSet(ResultSet rs){
+        if (rs!=null){
+            try{
+                rs.close();
+            }catch (SQLException e){
+                LOG.error(Messages.ERR_CANNOT_CLOSE_RESULTSET + e);
+            }
+        }
+    }
+
+    // Закрытие Connection
+    public  void closeConnection(Connection connection){
+        if(connection!=null){
+            try {
+                connection.close();
+                instance=null;
+            } catch (SQLException e) {
+                LOG.error(Messages.ERR_CANNOT_CLOSE_CONNECTION + e);
+            }
+        }
+    }
+
+    // Закрытие PrepareStatement,Connection, ResultSet
+    public void close(Connection con, Statement stmt, ResultSet rs){
+        closeConnection(con);
+        closePrepareStatement(stmt);
+        closeResultSet(rs);
+    }
+
+    public void rollback(Connection con){
+        if (con!=null){
+            try {
+                con.rollback();
+            } catch (SQLException e) {
+                LOG.error(Messages.ERR_CANNOT_ROLLBACK_TRANSACTION + e);
+            }
+        }
+    }
+
 }

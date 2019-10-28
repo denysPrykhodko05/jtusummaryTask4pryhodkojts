@@ -10,7 +10,7 @@
     <res-auth>Container</res-auth>
   </resource-ref>
 
-  !-- Start page filter -->
+  <!-- Start page filter -->
   <filter>
     <filter-name>LoginSessionFilter</filter-name>
     <filter-class>ua.nure.prykhodko.filter.LoginSessionFilter</filter-class>
@@ -19,6 +19,28 @@
   <filter-mapping>
     <filter-name>LoginSessionFilter</filter-name>
     <url-pattern>/</url-pattern>
+  </filter-mapping>
+
+  <!-- filter for login page-->
+  <filter>
+    <filter-name>LoginPageServlet</filter-name>
+    <filter-class>ua.nure.prykhodko.filter.LoginPageFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>LoginPageServlet</filter-name>
+    <servlet-name>LoginServlet</servlet-name>
+  </filter-mapping>
+
+  <!--filter for admin pages-->
+  <filter>
+    <filter-name>AdminPageFilter</filter-name>
+    <filter-class>ua.nure.prykhodko.filter.AdminPageFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>AdminPageFilter</filter-name>
+    <url-pattern>/admin/*</url-pattern>
   </filter-mapping>
 
   <!-- Login servlet -->
@@ -32,10 +54,15 @@
     <url-pattern>/login</url-pattern>
   </servlet-mapping>
 
-  <resource-env-ref>
+    <!-- Admin page servlet-->
+    <servlet>
+        <servlet-name>AdminPageServlet</servlet-name>
+        <servlet-class>ua.nure.prykhodko.servlet.AdminPageServlet</servlet-class>
+    </servlet>
 
-    <resource-env-ref-name>jdbc/mysql</resource-env-ref-name>
-    <resource-env-ref-type>javax.sql.DataSource</resource-env-ref-type>
-  </resource-env-ref>
+    <servlet-mapping>
+        <servlet-name>AdminPageServlet</servlet-name>
+        <url-pattern>/admin</url-pattern>
+    </servlet-mapping>
 
 </web-app>
