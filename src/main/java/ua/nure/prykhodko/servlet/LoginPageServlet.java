@@ -27,6 +27,8 @@ public class LoginPageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final String login = req.getParameter("login");
         final String password = req.getParameter("password");
+        HttpSession session = req.getSession();
+        session.setAttribute("loginBool", false);
 
         req.setAttribute("login", login);
         req.setAttribute("password", password);
@@ -42,12 +44,13 @@ public class LoginPageServlet extends HttpServlet {
             req.setAttribute("error_bool", true);
             req.getRequestDispatcher("/jsp/LoginPage.jsp").forward(req,resp);
         }else if (Validation.isCorrectPassword(password) && user.getPassword().equals(password)){
-            ROLE role = userDAO.getRoleByID(user.getId());
-            HttpSession session = req.getSession();
+            ROLE role = userDAO.getRoleByID(user.getRoleId());
+
 
             session.setAttribute("login", login);
             session.setAttribute("password", password);
             session.setAttribute("role",role);
+            session.setAttribute("loginBool", true);
 
             AccessController.moveToMenu(req,resp,role);
             }else{

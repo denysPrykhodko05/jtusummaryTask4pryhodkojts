@@ -9,11 +9,13 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class UserDAO extends AbstractController<User, Integer> implements userDAO {
 
     private static final String SQL_FIND_ALL_USERS = "SELECT * FROM USERS";
     private static final String SQL_FIND_USER_BY_LOGIN = "SELECT * FROM users WHERE login = (?)";
     private static final String SQL_FIND_ROLE_BY_ID = "SELECT access_level FROM role WHERE id=(?)";
+    private static final String SQL_ADD_USER = "INSERT INTO users (login, password, role) VALUES (?,?,?)";
 
     private ConnectionPool connectionPool = ConnectionPool.getInstance();
 
@@ -59,8 +61,40 @@ public class UserDAO extends AbstractController<User, Integer> implements userDA
         return false;
     }
 
+    /**
+     * add user to database
+     * @param entity
+     * @return if user added succesfuly method return true
+     */
     @Override
     public boolean addEntity(User entity) {
+
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs=null;
+
+        final String login = entity.getLogin();
+        final String password= entity.getPassword();
+        final int roleId = entity.getRoleId();
+
+        try {
+            con = connectionPool.getConnection();
+            pstm=con.prepareStatement(SQL_ADD_USER);
+
+            pstm.setString(1,login);
+            pstm.setString(2,password);
+            pstm.setInt(3,roleId);
+
+            if (pstm.executeUpdate()==1){
+                return true;
+            }
+        } catch (SQLException e) {
+            connectionPool.rollback(con);
+            e.printStackTrace();
+        }finally {
+            connectionPool.close(con,pstm,rs);
+        }
+
         return false;
     }
 

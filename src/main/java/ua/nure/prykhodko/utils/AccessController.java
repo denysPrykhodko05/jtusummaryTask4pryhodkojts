@@ -13,7 +13,7 @@ public class AccessController {
             if (role.equals(ROLE.ADMIN)) {
                 resp.sendRedirect("/admin");
             }else if(role.equals(ROLE.USER)){
-                req.getRequestDispatcher("/jsp/UserPage.jsp").forward(req,resp);
+                resp.sendRedirect("/");
             }else{
                 req.getRequestDispatcher("/index.jsp").forward(req,resp);
             }
