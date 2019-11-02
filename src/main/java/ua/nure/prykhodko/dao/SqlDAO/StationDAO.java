@@ -60,8 +60,10 @@ public class StationDAO extends AbstractController<Station,Integer> {
             pstm.setInt(2,id);
             rs=pstm.executeQuery();
             if (rs.next()){
-                String arrive_time =rs.getString(1);
-                String depart_time = rs.getString(2);
+
+                Timestamp arrive_time =rs.getTimestamp(1);
+                Timestamp depart_time = rs.getTimestamp(2);
+
                 if (arrive_time!=null){
                     station.setArrive_time(arrive_time);
                 }

@@ -9,8 +9,8 @@ public class Station {
     private int id;
     private String name;
     private List<Route> routeList = new ArrayList<>();
-    String arrive_time;
-    String depart_time;
+    Timestamp arrive_time;
+    Timestamp depart_time;
 
 
     public Station(){
@@ -20,7 +20,7 @@ public class Station {
         this.id = id;
         this.name = name;
     }
-    public Station(int id, String name, String arrive_time,String depart_time){
+    public Station(int id, String name, Timestamp arrive_time,Timestamp depart_time){
         this.id = id;
         this.name = name;
         this.arrive_time=arrive_time;
@@ -47,19 +47,19 @@ public class Station {
         this.id = id;
     }
 
-    public String getArrive_time() {
+    public Timestamp getArrive_time() {
         return arrive_time;
     }
 
-    public void setArrive_time(String arrive_time) {
+    public void setArrive_time(Timestamp arrive_time) {
         this.arrive_time = arrive_time;
     }
 
-    public String getDepart_time() {
+    public Timestamp getDepart_time() {
         return depart_time;
     }
 
-    public void setDepart_time(String depart_time) {
+    public void setDepart_time(Timestamp depart_time) {
         this.depart_time = depart_time;
     }
 

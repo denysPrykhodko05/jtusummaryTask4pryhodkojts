@@ -10,9 +10,18 @@ public class FinalRoute {
     private String finalStationName;
     private String arrive_time;
     private String depart_time;
+    private String timeInRoad;
     private int economy_class;
     private int compartment;
     private int common;
+
+    public String getTimeInRoad() {
+        return timeInRoad;
+    }
+
+    public void setTimeInRoad(String timeInRoad) {
+        this.timeInRoad = timeInRoad;
+    }
 
     public int getTrainId() {
         return trainId;
@@ -46,19 +55,19 @@ public class FinalRoute {
         this.finalStationName = finalStationName;
     }
 
-    public String getArrive_time() {
+    public String  getArrive_time() {
         return arrive_time;
     }
 
-    public void setArrive_time(String arrive_time) {
+    public void setArrive_time(String  arrive_time) {
         this.arrive_time = arrive_time;
     }
 
-    public String getDepart_time() {
+    public String  getDepart_time() {
         return depart_time;
     }
 
-    public void setDepart_time(String depart_time) {
+    public void setDepart_time(String  depart_time) {
         this.depart_time = depart_time;
     }
 
