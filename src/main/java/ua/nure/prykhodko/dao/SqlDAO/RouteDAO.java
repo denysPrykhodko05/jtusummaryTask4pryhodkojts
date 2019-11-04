@@ -1,5 +1,6 @@
 package ua.nure.prykhodko.dao.SqlDAO;
 
+import ua.nure.prykhodko.constants.Fields;
 import ua.nure.prykhodko.entity.Route;
 import ua.nure.prykhodko.entity.Station;
 
@@ -41,8 +42,8 @@ public class RouteDAO extends AbstractController<Route,Integer> {
             pstm.setInt(1,id);
             rs = pstm.executeQuery();
             if (rs.next()){
-                route.setRouteId(rs.getInt(1));
-                route.setTrainId(rs.getInt(2));
+                route.setRouteId(rs.getInt(Fields.ENTITY_ID));
+                route.setTrainId(rs.getInt(Fields.ROUTE_TRAIN));
                 return route;
             }
         } catch (SQLException e) {

@@ -58,6 +58,27 @@
     <url-pattern>/login</url-pattern>
   </servlet-mapping>
 
+    <!--Filter of access to buy ticket-->
+
+    <filter>
+        <filter-name>AccessToBuyTicketFilter</filter-name>
+        <filter-class>ua.nure.prykhodko.filter.AccessToBuyTicketFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AccessToBuyTicketFilter</filter-name>
+        <url-pattern>/purchaseTicket</url-pattern>
+    </filter-mapping>
+
+  <!-- Filter of access to profile-->
+  <filter>
+    <filter-name>AccessToProfile</filter-name>
+    <filter-class>ua.nure.prykhodko.filter.AccessToProfileFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>AccessToProfile</filter-name>
+    <url-pattern>/profile/*</url-pattern>
+  </filter-mapping>
+
     <!-- Admin page servlet-->
     <servlet>
         <servlet-name>AdminPageServlet</servlet-name>
@@ -80,15 +101,5 @@
     <url-pattern>/registration</url-pattern>
   </servlet-mapping>
 
-  <!-- Servlet for search route-->
- <!-- <servlet>
-    <servlet-name>SearchRouteServlet</servlet-name>
-    <servlet-class>ua.nure.prykhodko.servlet.SearchRouteServlet</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>SearchRouteServlet</servlet-name>
-    <url-pattern>/</url-pattern>
-  </servlet-mapping>-->
 
 </web-app>

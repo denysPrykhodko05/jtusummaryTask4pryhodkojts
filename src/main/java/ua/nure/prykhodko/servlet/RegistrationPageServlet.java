@@ -32,10 +32,17 @@ public class RegistrationPageServlet extends HttpServlet {
         final String password= req.getParameter("password");
         req.setAttribute("password", password);
 
+        final String email = req.getParameter("email");
+        req.setAttribute("email",email);
+
         final String confirmPassword = req.getParameter("confirmPassword");
         req.setAttribute("confirmPassword", confirmPassword);
 
-        if (!Validation.isCorrectLogin(login)){
+        if(!Validation.isCorrectEmail(email)){
+            req.setAttribute("error_bool", true);
+            req.setAttribute("error", "Incorrect email");
+            req.getRequestDispatcher("/jsp/RegistrationPage.jsp").forward(req,resp);
+        }else if (!Validation.isCorrectLogin(login)){
             req.setAttribute("error_bool", true);
             req.setAttribute("error", "Incorrect login");
             req.getRequestDispatcher("/jsp/RegistrationPage.jsp").forward(req,resp);
@@ -47,17 +54,20 @@ public class RegistrationPageServlet extends HttpServlet {
             user.setLogin(login);
             user.setPassword(password);
             user.setRoleId(2);
+            user.setEmail(email);
             if (userDAO.addEntity(user)){
                 session = req.getSession();
                 session.setAttribute("login", login);
                 session.setAttribute("password", password);
                 ROLE role = userDAO.getRoleByID(user.getRoleId());
                 session.setAttribute("role", role);
+                session.setAttribute("email",email);
                 session.setAttribute("loginBool", true);
+                session.setAttribute("count",0);
                 resp.sendRedirect("/login");
             }else{
                 req.setAttribute("error_bool", true);
-                req.setAttribute("error", "User with this login is already exist");
+                req.setAttribute("error", "User with this login/email is already exist");
                 req.getRequestDispatcher("/jsp/RegistrationPage.jsp").forward(req,resp);
             }
 

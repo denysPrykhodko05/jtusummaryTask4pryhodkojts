@@ -51,6 +51,8 @@ public class LoginPageServlet extends HttpServlet {
             session.setAttribute("password", password);
             session.setAttribute("role",role);
             session.setAttribute("loginBool", true);
+            session.setAttribute("email", user.getEmail());
+            session.setAttribute("count", user.getCount());
 
             AccessController.moveToMenu(req,resp,role);
             }else{

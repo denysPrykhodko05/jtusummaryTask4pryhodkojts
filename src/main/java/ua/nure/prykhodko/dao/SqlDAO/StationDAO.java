@@ -1,10 +1,13 @@
 package ua.nure.prykhodko.dao.SqlDAO;
 
+import ua.nure.prykhodko.constants.Fields;
 import ua.nure.prykhodko.entity.Route;
 import ua.nure.prykhodko.entity.Station;
 
 import java.sql.*;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 public class StationDAO extends AbstractController<Station,Integer> {
 
@@ -52,7 +55,7 @@ public class StationDAO extends AbstractController<Station,Integer> {
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
-
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+2:00"));
         try {
             con= ConnectionPool.getInstance().getConnection();
             pstm = con.prepareStatement(SQL_GET_TIME_FOR_STATION_BY_ID);
@@ -61,8 +64,8 @@ public class StationDAO extends AbstractController<Station,Integer> {
             rs=pstm.executeQuery();
             if (rs.next()){
 
-                Timestamp arrive_time =rs.getTimestamp(1);
-                Timestamp depart_time = rs.getTimestamp(2);
+                Timestamp arrive_time =rs.getTimestamp(Fields.STATION_ARRIVE_TIME, cal);
+                Timestamp depart_time = rs.getTimestamp(Fields.STATION_DEPART_TIME, cal);
 
                 if (arrive_time!=null){
                     station.setArrive_time(arrive_time);
@@ -105,7 +108,7 @@ public class StationDAO extends AbstractController<Station,Integer> {
             pstm.setString(1,name);
             rs = pstm.executeQuery();
             if(rs.next()){
-                return parseStation(rs.getInt(1),rs.getString(2)) ;
+                return parseStation(rs) ;
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
@@ -116,8 +119,8 @@ public class StationDAO extends AbstractController<Station,Integer> {
         return null;
     }
 
-    private  Station parseStation(int id, String name){
-        return new Station(id, name);
+    private  Station parseStation(ResultSet rs) throws SQLException {
+        return new Station(rs.getInt(Fields.ENTITY_ID),rs.getString(Fields.ENTITY_NAME));
     }
 
 }

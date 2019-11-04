@@ -18,6 +18,7 @@
 <p style="color:red"><c:out value = "${requestScope.error}"/><p>
     </c:if>
 <form name="RegForm" method="post" onsubmit="return validateForm('RegForm','login','password','confirmPassword')">
+    E-mail<label><input type="email" name="email" value="${requestScope.email}"></label><br>
     Login<label><input type="text" name="login" value="${requestScope.login}"></label><br>
     Password<label><input type="password" name="password" value="${requestScope.password}"></label><br>
     Confirm password<label><input type="password" name="confirmPassword" value="${requestScope.confirmPassword}"></label><br>

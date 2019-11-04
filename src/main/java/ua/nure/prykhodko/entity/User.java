@@ -5,8 +5,24 @@ public class User {
     private String login;
     private String password;
     private int roleId;
+    private String email;
+    private int count;
 
+    public int getCount() {
+        return count;
+    }
 
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public int getId() {
         return id;

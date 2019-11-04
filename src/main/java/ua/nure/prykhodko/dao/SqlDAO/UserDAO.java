@@ -15,9 +15,9 @@ public class UserDAO extends AbstractController<User, Integer> implements userDA
     private static final String SQL_FIND_ALL_USERS = "SELECT * FROM USERS";
     private static final String SQL_FIND_USER_BY_LOGIN = "SELECT * FROM users WHERE login = (?)";
     private static final String SQL_FIND_ROLE_BY_ID = "SELECT access_level FROM role WHERE id=(?)";
-    private static final String SQL_ADD_USER = "INSERT INTO users (login, password, role) VALUES (?,?,?)";
-
-    private ConnectionPool connectionPool = ConnectionPool.getInstance();
+    private static final String SQL_ADD_USER = "INSERT INTO users (login, password, role, email) VALUES (?,?,?,?)";
+    private static final String SQL_GET_COUNT_BY_LOGIN = "SELECT count FROM users WHERE login = (?)";
+    private static final String SQL_UPDATE_USER_COUNT ="UPDATE users SET count=(?) WHERE login=(?)";
 
     /**
      * getting all users in database
@@ -38,10 +38,10 @@ public class UserDAO extends AbstractController<User, Integer> implements userDA
                 allUsers.add(parseUser(rs));
             }
         } catch (SQLException e) {
-            connectionPool.rollback(con);
+            ConnectionPool.getInstance().rollback(con);
             e.printStackTrace();
         } finally {
-            connectionPool.close(con, statement, rs);
+            ConnectionPool.getInstance().close(con, statement, rs);
         }
         return allUsers;
     }
@@ -76,26 +76,56 @@ public class UserDAO extends AbstractController<User, Integer> implements userDA
         final String login = entity.getLogin();
         final String password= entity.getPassword();
         final int roleId = entity.getRoleId();
+        final String email = entity.getEmail();
 
         try {
-            con = connectionPool.getConnection();
+            con = ConnectionPool.getInstance().getConnection();
             pstm=con.prepareStatement(SQL_ADD_USER);
 
             pstm.setString(1,login);
             pstm.setString(2,password);
             pstm.setInt(3,roleId);
+            pstm.setString(4,email);
 
             if (pstm.executeUpdate()==1){
                 return true;
             }
         } catch (SQLException e) {
-            connectionPool.rollback(con);
+            ConnectionPool.getInstance().rollback(con);
             e.printStackTrace();
         }finally {
-            connectionPool.close(con,pstm,rs);
+            ConnectionPool.getInstance().close(con,pstm,rs);
         }
 
         return false;
+    }
+
+    /**
+     * getting current count by user login
+     * @param login
+     * @return current count
+     */
+
+    public Integer getCountByLogin(String login){
+        Connection con=null;
+        PreparedStatement pstm = null;
+        ResultSet rs= null;
+
+        try {
+            con= ConnectionPool.getInstance().getConnection();
+            pstm=con.prepareStatement(SQL_GET_COUNT_BY_LOGIN);
+            pstm.setString(1,login);
+            rs=pstm.executeQuery();
+            if (rs.next()){
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            ConnectionPool.getInstance().rollback(con);
+            e.printStackTrace();
+        }finally {
+            ConnectionPool.getInstance().close(con,pstm,rs);
+        }
+        return null;
     }
 
     /**
@@ -111,6 +141,8 @@ public class UserDAO extends AbstractController<User, Integer> implements userDA
         user.setLogin(resultSet.getString(Fields.USER_LOGIN));
         user.setPassword(resultSet.getString(Fields.USER_PASSWORD));
         user.setRoleId(resultSet.getInt(Fields.USER_ROLE_ID));
+        user.setEmail(resultSet.getString(Fields.USER_EMAIL));
+        user.setCount(resultSet.getInt(Fields.USER_COUNT));
         return user;
     }
 
@@ -133,14 +165,19 @@ public class UserDAO extends AbstractController<User, Integer> implements userDA
               return parseUser(rs);
             }
         } catch (SQLException e) {
-            connectionPool.rollback(con);
+            ConnectionPool.getInstance().rollback(con);
             e.printStackTrace();
         }finally {
-            connectionPool.close(con,preparedStatement,rs);
+            ConnectionPool.getInstance().close(con,preparedStatement,rs);
         }
         return null;
     }
 
+    /**
+     * getting role by id
+     * @param id
+     * @return user role
+     */
     public ROLE getRoleByID(int id){
         Connection con = null;
         PreparedStatement preparedStatement = null;
@@ -154,11 +191,32 @@ public class UserDAO extends AbstractController<User, Integer> implements userDA
                 return ROLE.valueOf(rs.getString(1));
             }
         } catch (SQLException e) {
-            connectionPool.rollback(con);
+            ConnectionPool.getInstance().rollback(con);
             e.printStackTrace();
         }finally {
-            connectionPool.close(con,preparedStatement,rs);
+            ConnectionPool.getInstance().close(con,preparedStatement,rs);
         }
         return null;
+    }
+
+    public boolean updateCountByLogin(int count, String login){
+        Connection con =null;
+        PreparedStatement pstm = null;
+        ResultSet rs =null;
+        try {
+            con = ConnectionPool.getInstance().getConnection();
+            pstm=con.prepareStatement(SQL_UPDATE_USER_COUNT);
+            pstm.setInt(1, count);
+            pstm.setString(2,login);
+            if (pstm.executeUpdate()==1){
+                return true;
+            }
+        } catch (SQLException e) {
+            ConnectionPool.getInstance().rollback(con);
+            e.printStackTrace();
+        }finally {
+            ConnectionPool.getInstance().close(con,pstm,rs);
+        }
+        return false;
     }
 }

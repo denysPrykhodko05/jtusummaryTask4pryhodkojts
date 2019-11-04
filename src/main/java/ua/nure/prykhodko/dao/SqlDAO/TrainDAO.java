@@ -1,5 +1,6 @@
 package ua.nure.prykhodko.dao.SqlDAO;
 
+import ua.nure.prykhodko.constants.Fields;
 import ua.nure.prykhodko.entity.Train;
 
 import java.sql.Connection;
@@ -22,6 +23,11 @@ public class TrainDAO extends AbstractController<Train, Integer> {
         return null;
     }
 
+    /**
+     * getting train by his id
+     * @param id
+     * @return object train
+     */
     @Override
     public Train getEntityById(Integer id) {
         Connection con = null;
@@ -34,7 +40,8 @@ public class TrainDAO extends AbstractController<Train, Integer> {
             pstm.setInt(1,id);
             rs = pstm.executeQuery();
             if (rs.next()){
-                return new Train(rs.getInt(2),rs.getInt(3),rs.getInt(4));
+                return new Train(rs.getInt(Fields.TRAIN_AMOUNT_OF_ECONOMY_CLASS),
+                        rs.getInt(Fields.TRAIN_AMOUNT_OF_COMPARTMENT),rs.getInt(Fields.TRAIN_AMOUNT_OF_COMMON));
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);

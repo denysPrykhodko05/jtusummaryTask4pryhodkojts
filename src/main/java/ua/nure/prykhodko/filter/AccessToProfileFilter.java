@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-public class AdminPageFilter implements Filter {
+public class AccessToProfileFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
@@ -19,9 +19,15 @@ public class AdminPageFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
         HttpSession session = req.getSession();
-        if(session.getAttribute("role") != null &&((ROLE)session.getAttribute("role")).equals(ROLE.ADMIN)) {
-            filterChain.doFilter(req,resp);
-        }else{
+        if(session!=null
+                && session.getAttribute("role") != null
+                &&((ROLE)session.getAttribute("role")).equals(ROLE.USER)){
+            req.getRequestDispatcher("/profile").forward(req,resp);
+        }else if(session!=null
+                && session.getAttribute("role") != null
+                &&((ROLE)session.getAttribute("role")).equals(ROLE.ADMIN)){
+            req.getRequestDispatcher("/admin").forward(req,resp);
+        }else {
             resp.sendRedirect("/");
         }
     }

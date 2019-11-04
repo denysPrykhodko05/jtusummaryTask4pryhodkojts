@@ -7,20 +7,18 @@ import ua.nure.prykhodko.entity.FinalRoute;
 import ua.nure.prykhodko.entity.Route;
 import ua.nure.prykhodko.entity.Station;
 import ua.nure.prykhodko.entity.Train;
+import ua.nure.prykhodko.utils.TimeUtils;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebListener;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Period;
 import java.util.*;
 
 @WebServlet("/search")
@@ -67,19 +65,19 @@ public class SearchRouteServlet extends HttpServlet {
                 stationDAO.getTimeForStation(stationTo, id);
                 if (stationFrom.getDepart_time() != null &&
                         stationTo.getArrive_time() != null &&
-                        compareDayOfWeek(Timestamp.valueOf(sb.toString()),stationFrom.getDepart_time())&&
-                        !compareTime(timeMin,stationFrom.getDepart_time())&&
-                        compareTime(stationTo.getArrive_time(),stationFrom.getDepart_time())) {
+                        TimeUtils.compareDayOfWeek(Timestamp.valueOf(sb.toString()), stationFrom.getDepart_time()) &&
+                        TimeUtils.timeFilter(timeMin, stationFrom.getDepart_time()) &&
+                        TimeUtils.compareTimeSation(stationTo.getArrive_time(), stationFrom.getDepart_time())) {
                     sb = new StringBuilder();
 
                     Route route = routeDAO.getEntityById(id);
                     train = trainDAO.getEntityById(route.getTrainId());
 
-                    timeInRoad = countTimeInRoad(stationTo, stationFrom);
-                    timeFrom = sb.append(date).append(" ").append(parseDate(stationFrom.getDepart_time())).toString();
+                    timeInRoad = TimeUtils.countTimeInRoad(stationTo, stationFrom);
+                    timeFrom = sb.append(date).append(" ").append(TimeUtils.parseDate(stationFrom.getDepart_time())).toString();
                     date = req.getParameter("date");
                     sb = new StringBuilder();
-                    timeTo = sb.append(date).append(" ").append(parseDate(stationTo.getArrive_time())).toString();
+                    timeTo = sb.append(date).append(" ").append(TimeUtils.parseDate(stationTo.getArrive_time())).toString();
 
                     finalRoute = new FinalRoute();
 
@@ -106,50 +104,6 @@ public class SearchRouteServlet extends HttpServlet {
         req.setAttribute("from", from);
         req.setAttribute("to", to);
         req.getRequestDispatcher("/index.jsp").forward(req, resp);
-    }
-
-    private String parseDate(Timestamp timestamp) {
-        String dateTime = timestamp.toString();
-        String[] parsedString = dateTime.split("\\s");
-        String time = parsedString[1];
-        return time;
-    }
-
-    private String countTimeInRoad(Station stationTo, Station stationFrom) {
-        StringBuilder sb = new StringBuilder();
-        Long timeInRoad = stationTo.getArrive_time().getTime() - stationFrom.getDepart_time().getTime();
-
-        timeInRoad /= 60000;
-        long hours = 0;
-        long minutes = 0;
-        hours = timeInRoad / 60;
-        minutes = timeInRoad % 60;
-
-        sb.append(hours).append(":").append(minutes);
-
-        return sb.toString();
-    }
-
-    private boolean compareDayOfWeek(Timestamp first, Timestamp second){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
-        Date d = null;
-        Date d2 =null;
-        try {
-            d = sdf.parse(first.toString());
-            d2 = sdf.parse(second.toString());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Calendar cal = Calendar.getInstance();
-        Calendar cal2 = Calendar.getInstance();
-        cal.setTime(d);
-        cal2.setTime(d2);
-        return cal.get(Calendar.DAY_OF_WEEK) == cal2.get(Calendar.DAY_OF_WEEK);
-    }
-
-    private boolean compareTime(Timestamp to, Timestamp from) {
-        Long time = to.getTime() - from.getTime();
-        return time > 0;
     }
 
     @Override
