@@ -1,0 +1,21 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: user1
+  Date: 04.11.2019
+  Time: 22:06
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page isELIgnored="false" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Route</title>
+</head>
+<body>
+<body><a href="/">HOME</a>
+<c:forEach var="route" items="${requestScope.route}">
+    <div style="display: flex;"> <div style="">${route.arrive_time}<br>${route.depart_time}</div><div style="align-self: center;">${route.name}</div></div><br><br>
+</c:forEach>
+</body>
+</html>

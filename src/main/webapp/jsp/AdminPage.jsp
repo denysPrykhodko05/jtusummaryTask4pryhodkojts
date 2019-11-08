@@ -13,12 +13,33 @@
     <title>Admin Page</title>
 </head>
 <body>
-<form method="post" action="/">
-    <label><input type="submit" name="Station" value="Edit station" ></label><br>
+<h2>Station</h2>
+
+<a href="/logout">Logout</a>
+<form method="get" action="<c:url value="/admin/stationEdit"/>">
+    <label><input type="submit" name="command" value="Edit station" ></label>
 </form>
 
-<form method="post">
-    <label><input type="submit" name="Routes" value="Edit routes" ></label><br>
+<form method="get" action="<c:url value="/admin/stationEdit"/>">
+    <label><input type="submit" name="command" value="Add station" ></label>
+</form>
+
+<form method="get" action="<c:url value="/admin/stationEdit"/>">
+    <label><input type="submit" name="command" value="Delete station" ></label><br>
+</form>
+<hr>
+
+<h2>Route</h2>
+<form method="get" action="<c:url value="/admin/stationEdit"/>">
+    <label><input type="submit" name="command" value="Edit route" ></label>
+</form>
+
+<form method="get" action="<c:url value="/admin/stationEdit"/>">
+    <label><input type="submit" name="command" value="Add route" ></label>
+</form>
+
+<form method="get" action="<c:url value="/admin/stationEdit"/>">
+    <label><input type="submit" name="command" value="Delete route" ></label><br>
 </form>
 
 </body>

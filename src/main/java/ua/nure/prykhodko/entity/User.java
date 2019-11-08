@@ -6,13 +6,13 @@ public class User {
     private String password;
     private int roleId;
     private String email;
-    private int count;
+    private double count;
 
-    public int getCount() {
+    public double getCount() {
         return count;
     }
 
-    public void setCount(int count) {
+    public void setCount(double count) {
         this.count = count;
     }
 

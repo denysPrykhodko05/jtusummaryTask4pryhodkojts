@@ -47,16 +47,16 @@
     <url-pattern>/admin/*</url-pattern>
   </filter-mapping>
 
-  <!-- Login servlet -->
-  <servlet>
-    <servlet-name>LoginServlet</servlet-name>
-    <servlet-class>ua.nure.prykhodko.servlet.LoginPageServlet</servlet-class>
-  </servlet>
+  <!--Filter for station edit-->
+  <filter>
+    <filter-name>StationEditFilter</filter-name>
+    <filter-class>ua.nure.prykhodko.filter.ControllerStationEdit</filter-class>
+  </filter>
 
-  <servlet-mapping>
-    <servlet-name>LoginServlet</servlet-name>
-    <url-pattern>/login</url-pattern>
-  </servlet-mapping>
+  <filter-mapping>
+    <filter-name>StationEditFilter</filter-name>
+    <url-pattern>/admin/stationEdit</url-pattern>
+  </filter-mapping>
 
     <!--Filter of access to buy ticket-->
 

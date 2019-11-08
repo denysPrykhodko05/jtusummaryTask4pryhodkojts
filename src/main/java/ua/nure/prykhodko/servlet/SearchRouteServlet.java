@@ -3,8 +3,8 @@ package ua.nure.prykhodko.servlet;
 import ua.nure.prykhodko.dao.SqlDAO.RouteDAO;
 import ua.nure.prykhodko.dao.SqlDAO.StationDAO;
 import ua.nure.prykhodko.dao.SqlDAO.TrainDAO;
-import ua.nure.prykhodko.entity.FinalRoute;
-import ua.nure.prykhodko.entity.Route;
+import ua.nure.prykhodko.bean.FinalRoute;
+import ua.nure.prykhodko.bean.Route;
 import ua.nure.prykhodko.entity.Station;
 import ua.nure.prykhodko.entity.Train;
 import ua.nure.prykhodko.utils.TimeUtils;
@@ -17,8 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @WebServlet("/search")
@@ -43,6 +41,9 @@ public class SearchRouteServlet extends HttpServlet {
         String timeTo;
         String timeInRoad;
         Timestamp timeMin;
+        double priceForCommon;
+        double priceForCompartment;
+        double priceForEconomy;
 
         FinalRoute finalRoute;
         Train train;
@@ -79,6 +80,11 @@ public class SearchRouteServlet extends HttpServlet {
                     sb = new StringBuilder();
                     timeTo = sb.append(date).append(" ").append(TimeUtils.parseDate(stationTo.getArrive_time())).toString();
 
+
+                    priceForCommon = TimeUtils.parseTime(timeInRoad)*30;
+                    priceForCompartment = TimeUtils.parseTime(timeInRoad)*60;
+                    priceForEconomy = TimeUtils.parseTime(timeInRoad)*45;
+
                     finalRoute = new FinalRoute();
 
                     finalRoute.setTrainId(route.getTrainId());
@@ -92,6 +98,9 @@ public class SearchRouteServlet extends HttpServlet {
                     finalRoute.setCompartment(train.getCompartment());
                     finalRoute.setEconomy_class(train.getEconomy_class());
                     finalRoute.setCommon(train.getCommon());
+                    finalRoute.setPriceForCommon(priceForCommon);
+                    finalRoute.setPriceForCompartment(priceForCompartment);
+                    finalRoute.setPriceForEconomy(priceForEconomy);
                     finalRouteList.add(finalRoute);
                     req.setAttribute("foundRoute", true);
                     req.setAttribute("search", true);

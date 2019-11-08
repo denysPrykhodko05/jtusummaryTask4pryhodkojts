@@ -6,12 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Station {
-    private int id;
     private String name;
-    private List<Route> routeList = new ArrayList<>();
     Timestamp arrive_time;
     Timestamp depart_time;
+    private int id;
+    private int route_id;
 
+    public int getRoute_id() {
+        return route_id;
+    }
+
+    public void setRoute_id(int route_id) {
+        this.route_id = route_id;
+    }
 
     public Station(){
 
@@ -27,24 +34,12 @@ public class Station {
         this.depart_time=depart_time;
     }
 
-    public List<Route> getRouteList() {
-        return routeList;
-    }
-
-    public void setRouteList(List<Route> routeList) {
-        this.routeList = routeList;
-    }
-
-    public void addRouteToList(Route route){
-        routeList.add(route);
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public Timestamp getArrive_time() {
@@ -70,4 +65,5 @@ public class Station {
     public void setName(String name) {
         this.name = name;
     }
+
 }

@@ -1,7 +1,11 @@
-package ua.nure.prykhodko.entity;
+package ua.nure.prykhodko.bean;
+
+import ua.nure.prykhodko.entity.Station;
 
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.TreeSet;
 
 public class FinalRoute {
     private int trainId;
@@ -14,6 +18,42 @@ public class FinalRoute {
     private int economy_class;
     private int compartment;
     private int common;
+    private double priceForCommon;
+    private double priceForCompartment;
+    private double priceForEconomy;
+    private TreeSet<Station> routeList;
+
+    public TreeSet<Station> getRouteList() {
+        return routeList;
+    }
+
+    public void setRouteList(TreeSet<Station> routeList) {
+        this.routeList = routeList;
+    }
+
+    public double getPriceForCommon() {
+        return priceForCommon;
+    }
+
+    public void setPriceForCommon(double priceForCommon) {
+        this.priceForCommon = priceForCommon;
+    }
+
+    public double getPriceForCompartment() {
+        return priceForCompartment;
+    }
+
+    public void setPriceForCompartment(double priceForCompartment) {
+        this.priceForCompartment = priceForCompartment;
+    }
+
+    public double getPriceForEconomy() {
+        return priceForEconomy;
+    }
+
+    public void setPriceForEconomy(double priceForEconomy) {
+        this.priceForEconomy = priceForEconomy;
+    }
 
     public String getTimeInRoad() {
         return timeInRoad;

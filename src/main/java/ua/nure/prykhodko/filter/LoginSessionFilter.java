@@ -12,7 +12,7 @@ import java.io.IOException;
 
 import static java.util.Objects.nonNull;
 
-public class LoginSessionFilter implements Filter {
+public class    LoginSessionFilter implements Filter {
 
     private Logger LOG = Logger.getLogger(LoginSessionFilter.class);
 

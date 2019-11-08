@@ -6,7 +6,9 @@ import ua.nure.prykhodko.entity.User;
 import ua.nure.prykhodko.utils.AccessController;
 import ua.nure.prykhodko.utils.Validation;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,8 +16,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
+@WebServlet("/login")
 public class LoginPageServlet extends HttpServlet {
-    UserDAO userDAO;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -25,6 +27,8 @@ public class LoginPageServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ServletContext servletContext = req.getServletContext();
+        UserDAO userDAO =(UserDAO) servletContext.getAttribute("userDAO");
         final String login = req.getParameter("login");
         final String password = req.getParameter("password");
         HttpSession session = req.getSession();
@@ -64,6 +68,5 @@ public class LoginPageServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        userDAO = new UserDAO();
     }
 }

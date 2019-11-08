@@ -1,0 +1,8 @@
+var select = document.querySelector('select').options;
+var selectId = document.getElementById('select');
+var countOfOption = Number(selectId.getAttribute('data-value'));
+var i=1;
+while(i<countOfOption+1) {
+    select[select.length] = new Option(i, i);
+    i++;
+}

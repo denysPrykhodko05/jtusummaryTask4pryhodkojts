@@ -13,11 +13,12 @@
     <title>Login</title>
     <script src="../javaScript/ValidationLoginPage.js"></script>
 </head>
-<body>
+<body><a href="/">HOME</a>
+
 <c:if test = "${requestScope.error_bool == true}">
 <p style="color:red"><c:out value = "${requestScope.error}"/><p>
     </c:if>
-        <form name="LoginForm" method="post" onsubmit="return validateForm('LoginForm','login','password')">
+        <form name="LoginForm" method="post" action="<c:url value="/login"/>" onsubmit="return validateForm('LoginForm','login','password')">
             Login<input type="text" name="login" value="${requestScope.login}"><br>
             Password<input type="password" name="password" value="${requestScope.password}"><br>
             <input type="submit" login="Ok" value="Ok"><br>

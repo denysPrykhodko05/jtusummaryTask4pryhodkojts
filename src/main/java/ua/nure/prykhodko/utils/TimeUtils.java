@@ -17,6 +17,14 @@ public class TimeUtils {
         return time;
     }
 
+    public static double parseTime(String time){
+        String time_temp = time;
+        String[] parsedTime =   time_temp.split(":");
+        double hours = Double.parseDouble(parsedTime[0]);
+        double minutes = Double.parseDouble(parsedTime[1])/60;
+        return hours+minutes;
+    }
+
     public static String countTimeInRoad(Station stationTo, Station stationFrom) {
         StringBuilder sb = new StringBuilder();
         Long timeInRoad = stationTo.getArrive_time().getTime() - stationFrom.getDepart_time().getTime();
@@ -63,6 +71,12 @@ public class TimeUtils {
     public static boolean compareTimeSation(Timestamp to, Timestamp from) {
         Long time = to.getTime() - from.getTime();
         return time > 0;
+    }
+
+    public static Timestamp parseStringToTimestamp(String date, String time){
+        StringBuilder sb = new StringBuilder();
+        sb.append(date).append(" ").append(time).append(":00").append(".0");
+        return Timestamp.valueOf(sb.toString());
     }
 
 }

@@ -1,4 +1,4 @@
-package ua.nure.prykhodko.entity;
+package ua.nure.prykhodko.bean;
 
 public class Route {
     private int routeId;

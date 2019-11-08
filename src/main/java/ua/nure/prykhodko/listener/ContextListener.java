@@ -1,9 +1,6 @@
 package ua.nure.prykhodko.listener;
 
-import ua.nure.prykhodko.dao.SqlDAO.RouteDAO;
-import ua.nure.prykhodko.dao.SqlDAO.StationDAO;
-import ua.nure.prykhodko.dao.SqlDAO.TrainDAO;
-import ua.nure.prykhodko.dao.SqlDAO.UserDAO;
+import ua.nure.prykhodko.dao.SqlDAO.*;
 import ua.nure.prykhodko.entity.User;
 
 import javax.servlet.ServletContext;
@@ -17,6 +14,7 @@ public class ContextListener implements ServletContextListener {
         UserDAO userDAO = new UserDAO();
         StationDAO stationDAO = new StationDAO();
         TrainDAO trainDAO = new TrainDAO();
+        TicketDAO ticketDAO = new TicketDAO();
 
         ServletContext servletContext = servletContextEvent.getServletContext();
 
@@ -24,6 +22,7 @@ public class ContextListener implements ServletContextListener {
         servletContext.setAttribute("routeDAO", routeDAO);
         servletContext.setAttribute("stationDAO", stationDAO);
         servletContext.setAttribute("trainDAO", trainDAO);
+        servletContext.setAttribute("ticketDAO", ticketDAO);
 
     }
 

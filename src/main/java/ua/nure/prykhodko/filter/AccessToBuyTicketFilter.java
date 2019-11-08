@@ -17,11 +17,23 @@ public class AccessToBuyTicketFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
         HttpSession session = req.getSession();
-        if ((boolean)session.getAttribute("loginBool")){
-            req.getRequestDispatcher("/trainWagon").forward(req,resp);
+        boolean respFlag=false;
+        boolean isLogin=false;
+        try{
+            isLogin =(boolean) session.getAttribute("loginBool");
+        }catch (NullPointerException e){
+            req.setAttribute("unLogin", false);
+            resp.sendRedirect("/login");
+            respFlag=true;
+            e.printStackTrace();
+        }
+        if (isLogin){
+            filterChain.doFilter(req,resp);
         }else{
             req.setAttribute("unLogin", false);
-            req.getRequestDispatcher("/search").forward(req,resp);
+            if (!respFlag) {
+                resp.sendRedirect("/login");
+            }
         }
     }
 

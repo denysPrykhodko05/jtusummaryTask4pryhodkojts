@@ -8,6 +8,7 @@ import ua.nure.prykhodko.entity.User;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class UserDAO extends AbstractController<User, Integer> implements userDAO {
@@ -18,6 +19,7 @@ public class UserDAO extends AbstractController<User, Integer> implements userDA
     private static final String SQL_ADD_USER = "INSERT INTO users (login, password, role, email) VALUES (?,?,?,?)";
     private static final String SQL_GET_COUNT_BY_LOGIN = "SELECT count FROM users WHERE login = (?)";
     private static final String SQL_UPDATE_USER_COUNT ="UPDATE users SET count=(?) WHERE login=(?)";
+    private static final String SQL_USER_TICKET_ID_BY_LOGIN = "SELECT ticket_id FROM users WHERE login=(?)";
 
     /**
      * getting all users in database
@@ -100,13 +102,34 @@ public class UserDAO extends AbstractController<User, Integer> implements userDA
         return false;
     }
 
+    public int getTicketId(String login){
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        try {
+            con=ConnectionPool.getInstance().getConnection();
+            pstm =con.prepareStatement(SQL_USER_TICKET_ID_BY_LOGIN);
+            pstm.setString(1,login);
+            rs = pstm.executeQuery();
+            if (rs.next()){
+                return rs.getInt(Fields.USER_TICKET_ID);
+            }
+        } catch (SQLException e) {
+            ConnectionPool.getInstance().rollback(con);
+            e.printStackTrace();
+        }finally {
+            ConnectionPool.getInstance().close(con,pstm,rs);
+        }
+        return 0;
+    }
+
     /**
      * getting current count by user login
      * @param login
      * @return current count
      */
 
-    public Integer getCountByLogin(String login){
+    public Double getCountByLogin(String login){
         Connection con=null;
         PreparedStatement pstm = null;
         ResultSet rs= null;
@@ -117,7 +140,7 @@ public class UserDAO extends AbstractController<User, Integer> implements userDA
             pstm.setString(1,login);
             rs=pstm.executeQuery();
             if (rs.next()){
-                return rs.getInt(1);
+                return rs.getDouble(1);
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
@@ -142,7 +165,7 @@ public class UserDAO extends AbstractController<User, Integer> implements userDA
         user.setPassword(resultSet.getString(Fields.USER_PASSWORD));
         user.setRoleId(resultSet.getInt(Fields.USER_ROLE_ID));
         user.setEmail(resultSet.getString(Fields.USER_EMAIL));
-        user.setCount(resultSet.getInt(Fields.USER_COUNT));
+        user.setCount(resultSet.getDouble(Fields.USER_COUNT));
         return user;
     }
 
@@ -199,14 +222,14 @@ public class UserDAO extends AbstractController<User, Integer> implements userDA
         return null;
     }
 
-    public boolean updateCountByLogin(int count, String login){
+    public boolean updateCountByLogin(double count, String login){
         Connection con =null;
         PreparedStatement pstm = null;
         ResultSet rs =null;
         try {
             con = ConnectionPool.getInstance().getConnection();
             pstm=con.prepareStatement(SQL_UPDATE_USER_COUNT);
-            pstm.setInt(1, count);
+            pstm.setDouble(1, count);
             pstm.setString(2,login);
             if (pstm.executeUpdate()==1){
                 return true;

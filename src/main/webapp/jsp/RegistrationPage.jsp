@@ -14,6 +14,7 @@
     <script src="../javaScript/ValidationRegistrationPage.js"></script>
 </head>
 <body>
+<body><a href="/">HOME</a>
 <c:if test = "${requestScope.error_bool == true}">
 <p style="color:red"><c:out value = "${requestScope.error}"/><p>
     </c:if>

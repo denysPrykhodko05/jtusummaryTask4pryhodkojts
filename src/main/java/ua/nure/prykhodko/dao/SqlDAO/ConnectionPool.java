@@ -17,8 +17,8 @@ public class ConnectionPool {
 
     private static final String login = "root";
     private static final String password= "";
-    private static final String url = "jdbc:mysql://localhost:3306/mysql?useUnicode=true&useLegacyDatetimeCode=false";
-    //private static final String url = "jdbc:mysql://localhost:3306/mysql?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+   // private static final String url = "jdbc:mysql://localhost:3306/mysql?useUnicode=true&useLegacyDatetimeCode=false";
+    private static final String url = "jdbc:mysql://localhost:3306/mysql?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 
     private ConnectionPool(){
         try {

@@ -17,6 +17,14 @@ import java.io.IOException;
 public class ProfileServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ServletContext servletContext = req.getServletContext();
+        HttpSession session = req.getSession();
+        double count;
+        String login;
+        UserDAO userDAO = (UserDAO) servletContext.getAttribute("userDAO");
+        login = (String)session.getAttribute("login");
+        count = userDAO.getCountByLogin(login);
+        session.setAttribute("count",count);
         req.getRequestDispatcher("/jsp/UserProfile.jsp").forward(req, resp);
     }
 
@@ -26,28 +34,33 @@ public class ProfileServlet extends HttpServlet {
         UserDAO userDAO = (UserDAO) context.getAttribute("userDAO");
         HttpSession session = req.getSession();
         String login = (String) session.getAttribute("login");
-        int countOld = (int) session.getAttribute("count");
-        int countNew=0;
+        double countOld = userDAO.getCountByLogin(login);
+        double countNew = 0;
 
-        try {
-            countNew = Integer.parseInt(req.getParameter("count"));
-        }catch (NumberFormatException e){
-            req.setAttribute("error", "Incorrect input. Sum must be more than 0 and less then 1000000");
-            req.getRequestDispatcher("/jsp/UserProfile.jsp").forward(req,resp);
-            e.printStackTrace();
+        if (req.getAttribute("success") == null) {
+            try {
+                countNew = Double.parseDouble(req.getParameter("count"));
+            } catch (NumberFormatException e) {
+                req.setAttribute("errorProfile", "Incorrect input. Sum must be more than 0 and less then 1000000");
+                req.getRequestDispatcher("/jsp/UserProfile.jsp").forward(req, resp);
+            } catch (NullPointerException e) {
+                req.getRequestDispatcher("/jsp/UserProfile.jsp").forward(req, resp);
+            }
+        } else {
+            req.getRequestDispatcher("/jsp/UserProfile.jsp").forward(req, resp);
         }
 
-        if (Validation.fundCountValidation(Long.toString(countNew))  && countNew>0 && countNew<1000000) {
+        if (Validation.fundCountValidation(Double.toString(countNew)) && countNew > 0 && countNew < 1000000) {
             countNew += countOld;
             if (userDAO.updateCountByLogin(countNew, login)) {
                 session.setAttribute("count", countNew);
-                doGet(req, resp);
+               resp.sendRedirect("/profile");
             } else {
                 doGet(req, resp);
             }
-        }else {
-            req.setAttribute("error", "Incorrect input. Sum must be more than 0 and less then 1000000");
-            req.getRequestDispatcher("/jsp/UserProfile.jsp").forward(req,resp);
+        } else {
+            req.setAttribute("errorProfile", "Incorrect input. Sum must be more than 0 and less then 1000000");
+            req.getRequestDispatcher("/jsp/UserProfile.jsp").forward(req, resp);
         }
     }
 }

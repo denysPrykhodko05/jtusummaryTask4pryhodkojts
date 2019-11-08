@@ -30,5 +30,6 @@ if (dayMax < 10)
 var date = year+"-"+month+"-"+day;
 var dateMax = yearMax+"-"+monthMax+"-"+dayMax;
 var dateH = document.querySelector('#vDate');
+dateH.setAttribute('value',date.toString());
 dateH.setAttribute('min',date.toString());
 dateH.setAttribute('max', dateMax.toString());
