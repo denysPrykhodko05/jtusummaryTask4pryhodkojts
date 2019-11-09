@@ -15,7 +15,7 @@
 </head>
 <body>
 <a href="/admin">HOME</a><br><a href="/logout">Logout</a><br>
-<form method="post" onsubmit="return isCorrectStationName()" action="<c:url value="/admin/stationEdit/delete"/>">
+<form name="deleteForm" method="post" onsubmit="return isCorrectStationName('deleteForm','station_name')" action="<c:url value="/admin/stationEdit/delete"/>">
 Station name: <input type="text" id="station_name" name="station_name"><br>
 <input type="submit" value="Ok"><br>
 </form>

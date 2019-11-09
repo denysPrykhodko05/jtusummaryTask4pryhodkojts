@@ -30,6 +30,8 @@ public class Fields {
     //Route fields
     public static final String ROUTE_TRAIN = "train";
     public static final String ROUTE_ID = "route_id";
+    public static final String ROUTE_START_STATION = "start_station";
+    public static final String ROUTE_FINAL_STATION = "final_station";
 
 
     //Sold tickets fields

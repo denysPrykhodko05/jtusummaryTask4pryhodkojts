@@ -261,31 +261,6 @@ public class StationDAO extends AbstractController<Station, Integer> {
         return null;
     }
 
-    public Station getStationByLogin(String login) {
-        Connection con = null;
-        PreparedStatement pstm = null;
-        ResultSet rs = null;
-        Station station = new Station();
-
-        try {
-            con = ConnectionPool.getInstance().getConnection();
-            pstm = con.prepareStatement(SQL_GET_STATION_BY_LOGIN);
-            pstm.setString(1, login);
-            rs = pstm.executeQuery();
-            if (rs.next()) {
-                station.setId(rs.getInt(Fields.ENTITY_ID));
-                station.setName(rs.getString(Fields.ENTITY_NAME));
-            }
-            return station;
-        } catch (SQLException e) {
-            ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
-        } finally {
-            ConnectionPool.getInstance().close(con, pstm, rs);
-        }
-        return null;
-    }
-
     /**
      * getting station object
      *

@@ -22,6 +22,13 @@ public class RouteDAO extends AbstractController<Route, Integer> {
     private static final String SQL_AVAILABLE_TRAIN = "select train.id, amount_of_economy_class, amount_of_compartment, amount_of_common from train LEFT JOIN route on train.id = route.train where route.train IS NULL";
     private static final String SQL_UPDATE_ROUTE_TRAIN = "UPDATE route SET train=? WHERE id=?";
     private static final String SQL_GET_ROUTE_ID_BY_TRAIN = "SELECT id FROM route WHERE train = ?";
+    private static final String SQL_UPDATE_START_STATION = "UPDATE route SET start_station=?,start_time=? WHERE id=?";
+    private static final String SQL_UPDATE_FINAL_STATION = "UPDATE route SET final_station=?,arrive_time=? WHERE id=?";
+    private static final String SQL_ADD_DEPART_STATION_ROUTE = "INSERT INTO station_route(station_id, route_id,depart_time) VALUES (?,?,?)";
+    private static final String SQL_ADD_ARRIVE_STATION_ROUTE = "INSERT INTO station_route(station_id, route_id,arrive_time) VALUES (?,?,?)";
+    private static final String SQL_GET_START_STATION_ID = "SELECT start_station FROM route WHERE id=?";
+    private static final String SQL_GET_FINAL_STATION_ID = "SELECT final_station FROM route WHERE id=?";
+    private static final String SQL_DELETE_STATION_FROM_ROUTE = "DELETE FROM station_route WHERE station_id=? and route_id=?";
 
     @Override
     public List<Route> getAll() {
@@ -81,16 +88,16 @@ public class RouteDAO extends AbstractController<Route, Integer> {
         try {
             con = ConnectionPool.getInstance().getConnection();
             pstm = con.prepareStatement(SQL_GET_ROUTE_ID_BY_TRAIN);
-            pstm.setInt(1,id);
+            pstm.setInt(1, id);
             rs = pstm.executeQuery();
-            if (rs.next()){
+            if (rs.next()) {
                 return rs.getInt(Fields.ENTITY_ID);
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
             e.printStackTrace();
-        }finally {
-            ConnectionPool.getInstance().close(con, pstm,rs);
+        } finally {
+            ConnectionPool.getInstance().close(con, pstm, rs);
         }
         return 0;
     }
@@ -179,13 +186,84 @@ public class RouteDAO extends AbstractController<Route, Integer> {
         return null;
     }
 
-   /* public TreeSet<Station> getRouteListByStation(Station o1){
+    public boolean isExistRoute(int id){
         Connection con = null;
         PreparedStatement pstm = null;
-        ResultSet rs= null;
+        ResultSet rs = null;
+        try{
+            con = ConnectionPool.getInstance().getConnection();
+            pstm = con.prepareStatement(SQL_GET_ROUTE_BY_ID);
+            rs =pstm.executeQuery();
+            while (rs.next()){
+                if (rs.getInt(Fields.ENTITY_ID)==id){
+                    return true;
+                }
+            }
+        }catch (SQLException e){
+            ConnectionPool.getInstance().rollback(con);
+        }finally {
+            ConnectionPool.getInstance().close(con,pstm,rs);
+        }
+        return false;
+    }
 
-        con=ConnectionPool.getInstance().getConnection();
-    }*/
+    public boolean addStartStationInStationRoute(Station station) {
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+2:00"));
+        try {
+            con = ConnectionPool.getInstance().getConnection();
+            pstm = con.prepareStatement(SQL_ADD_DEPART_STATION_ROUTE);
+            pstm.setInt(1, station.getId());
+            pstm.setInt(2, station.getRoute_id());
+            pstm.setTimestamp(3, station.getDepart_time(), cal);
+            pstm.executeUpdate();
+        } catch (SQLException e) {
+            ConnectionPool.getInstance().rollback(con);
+            e.printStackTrace();
+        } finally {
+            ConnectionPool.getInstance().close(con, pstm, rs);
+        }
+        return false;
+    }
+
+    public boolean addFinalStationInRoute(Station station){
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+2:00"));
+        try {
+            con = ConnectionPool.getInstance().getConnection();
+            pstm = con.prepareStatement(SQL_ADD_ARRIVE_STATION_ROUTE);
+            pstm.setInt(1, station.getId());
+            pstm.setInt(2, station.getRoute_id());
+            pstm.setTimestamp(3, station.getArrive_time(), cal);
+           return pstm.executeUpdate()==1;
+        } catch (SQLException e) {
+            ConnectionPool.getInstance().rollback(con);
+            e.printStackTrace();
+        } finally {
+            ConnectionPool.getInstance().close(con, pstm, rs);
+        }
+        return false;
+    }
+
+    public boolean updateStartStationInRoute(int route_id, int station_id, Timestamp time) {
+       return updateStationInRoute(station_id,route_id,time,SQL_UPDATE_START_STATION);
+    }
+
+    public boolean updateFinalStationInRoute(int route_id, int station_id, Timestamp time){
+        return updateStationInRoute(station_id, route_id, time,SQL_UPDATE_FINAL_STATION);
+    }
+
+    public int getStartStationInRoute(int route_id) {
+    return     getStationInRoute(route_id,SQL_GET_START_STATION_ID,Fields.ROUTE_START_STATION);
+    }
+
+    public int getFinalStationInRoute(int route_id){
+       return getStationInRoute(route_id,SQL_GET_FINAL_STATION_ID,Fields.ROUTE_FINAL_STATION);
+    }
 
     public boolean addStationToRoute(Station station) {
         Connection con = null;
@@ -215,6 +293,64 @@ public class RouteDAO extends AbstractController<Route, Integer> {
 
     @Override
     public boolean addEntity(Route entity) {
+        return false;
+    }
+
+    public int getStationInRoute(int route_id,String SQL, String rsString){
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        con = ConnectionPool.getInstance().getConnection();
+        try {
+            pstm = con.prepareStatement(SQL);
+            pstm.setInt(1, route_id);
+            rs = pstm.executeQuery();
+            return rs.next() ? rs.getInt(rsString) : 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    private boolean updateStationInRoute(int station_id, int route_id, Timestamp time, String SQL){
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+2:00"));
+
+        try {
+            con = ConnectionPool.getInstance().getConnection();
+            pstm = con.prepareStatement(SQL);
+            pstm.setInt(1, station_id);
+            pstm.setTimestamp(2, time, cal);
+            pstm.setInt(3, route_id);
+            return pstm.executeUpdate() == 1;
+        } catch (SQLException e) {
+            ConnectionPool.getInstance().rollback(con);
+            e.printStackTrace();
+        } finally {
+            ConnectionPool.getInstance().close(con, pstm, rs);
+        }
+        return false;
+    }
+
+    public boolean deleteStationFromRoute(int station_id,int route_id){
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+
+        con = ConnectionPool.getInstance().getConnection();
+        try {
+            pstm = con.prepareStatement(SQL_DELETE_STATION_FROM_ROUTE);
+            pstm.setInt(1,station_id);
+            pstm.setInt(2,route_id);
+            return pstm.executeUpdate()==1;
+        } catch (SQLException e) {
+            ConnectionPool.getInstance().rollback(con);
+            e.printStackTrace();
+        }finally {
+            ConnectionPool.getInstance().close(con,pstm,rs);
+        }
         return false;
     }
 

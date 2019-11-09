@@ -12,6 +12,7 @@
 <head>
     <title>Edit route</title>
     <script src="../javaScript/RouteNumberValidation.js"></script>
+    <script src="../javaScript/StationNameValidation.js"></script>
 </head>
 <body>
 <a href="/admin">HOME</a><br><a href="/logout">Logout</a><br>
@@ -22,6 +23,8 @@
         <input type="radio" name="choice" value="train">Train<br>
         <input type="radio" name="choice" value="startStation">Start station<br>
         <input type="radio" name="choice" value="finalStation">Final station<br>
+        <input type="radio" name="choice" value="deleteStation">Delete station<br>
+        <input type="radio" name="choice" value="addStation">Add station<br>
         <input type="submit" value="Ok">
     </form>
 
@@ -39,7 +42,7 @@
 </c:if>
 
 <c:choose>
-    //update train
+
     <c:when test="${requestScope.train==true}">
         <c:forEach var="train" items="${requestScope.trainList}">
             <form method="post">
@@ -56,19 +59,50 @@
         </c:forEach>
     </c:when>
 
-    //update start station
     <c:when test="${requestScope.startStation == true}">
-        <form method="post">
-            New start station: <input type="text" name="name"><br>
-            Arrive time: <input type="date" name="arriveDate">  <input type="time" name="arriveTime"><br>
+        <form method="post" name="startStationForm"
+              onsubmit="return isCorrectStationName('startStationForm','startName')">
+            New start station: <input id="startName" type="text" name="startName"><br>
+            Depart time: <input type="date" name="departDate"> <input type="time" name="departTime"><br>
+            <input type="hidden" name="route_number" value="${requestScope.route_number}">
             <input type="submit" value="Ok">
         </form>
     </c:when>
 
-    //update final station
-    <c:when test="">
-
+    <c:when test="${requestScope.finalStation == true}">
+        <form method="post" name="finalStationForm"
+              onsubmit="return isCorrectStationName('finalStationForm','finalName')">
+            New start station: <input type="text" id="finalName" name="finalName"><br>
+            Depart time: <input type="date" name="arriveDate"> <input type="time" name="arriveTime"><br>
+            <input type="hidden" name="route_number" value="${requestScope.route_number}">
+            <input type="submit" value="Ok">
+        </form>
     </c:when>
+
+    <c:when test="${requestScope.deleteStation==true}">
+        <form method="post" name="deleteStationForm"
+              onsubmit="return isCorrectStationName('deleteStationForm','stationName')">
+            Station name: <input type="text" id="deleteName" name="stationName"><br>
+            <input type="hidden" name="deleteStation" value="true">
+            <input type="hidden" name="route_number" value="${requestScope.route_number}">
+            <input type="submit" value="Ok">
+        </form>
+
+    </c:when><c:when test="${requestScope.addStation==true}">
+    <form method="post" name="addStationForm" onsubmit="return isCorrectStationName('deleteStationForm','stationName')">
+        Station name: <input type="text" id="addStation" name="stationName"><br>
+        Arrive time: <input type="date" name="arriveDate"> <input type="time" name="arriveTime" value="00:00"><br>
+        Depart time: <input type="date" name="departDate"> <input type="time" name="departTime" value="00:00"><br>
+        <input type="hidden" name="addStation" value="true">
+        <input type="hidden" name="route_number" value="${requestScope.route_number}">
+        <input type="submit" value="Ok">
+
+        <c:if test="${errorAddStationName == true}">
+                <p style="color: red">Incorrect input</p><br>
+        </c:if>
+    </form>
+</c:when>
+
 </c:choose>
 <c:if test="${requestScope.errorUpdate==true}">
     <p style="color: red;">Something gone wrong, try later!</p><br>
