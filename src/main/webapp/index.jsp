@@ -1,9 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ page isELIgnored="false" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
-<fmt:setLocale value="ru"/>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="locale"/>
 <html>
 <head>
@@ -13,10 +12,11 @@
 </head>
 <body>
 <form method="post" action="/changeLang">
-    <select name="lang" onchange="this.form.submit()">
+    <select name="locale">
         <option value="en">en</option>
         <option selected value="ru">ru</option>
-    </select>
+    </select><br>
+    <input type="submit" value="Ok">
 </form>
 <c:choose>
     <c:when test="${sessionScope.loginBool == true}">
@@ -36,7 +36,7 @@
             <input type="text" name="from" value="${requestScope.from}">
         </div>
         <div>
-            <div><fmt:message key="index.to"/> </div>
+            <div><fmt:message key="index.to"/></div>
             <input type="text" name="to" value="${requestScope.to}"><br>
         </div>
 
@@ -100,8 +100,9 @@
                             <input type="hidden" id="price" name="price" value="${route.priceForEconomy}">
                             <input type="hidden" id="arrive_time" name="arrive_time" value="${route.arrive_time}">
                             <input type="hidden" id="depart_time" name="depart_time" value="${route.depart_time}">
-                            <fmt:message key="index.economy_class"/>: ${route.economy_class * 58} <input type="submit" name="economy_class"
-                                                                              value="<fmt:message key="index.choose"/>"><br>
+                            <fmt:message key="index.economy_class"/>: ${route.economy_class * 58} <input type="submit"
+                                                                                                         name="economy_class"
+                                                                                                         value="<fmt:message key="index.choose"/>"><br>
                         </form>
                     </c:if>
                     <c:if test="${route.compartment>0}">
@@ -112,8 +113,9 @@
                             <input type="hidden" id="price" name="price" value="${route.priceForCompartment}">
                             <input type="hidden" id="arrive_time" name="arrive_time" value="${route.arrive_time}">
                             <input type="hidden" id="depart_time" name="depart_time" value="${route.depart_time}">
-                            <fmt:message key="index.compartment"/> : ${route.compartment * 36} <input type="submit" name="compartment"
-                                                                          value="<fmt:message key="index.choose"/>"><br>
+                            <fmt:message key="index.compartment"/> : ${route.compartment * 36} <input type="submit"
+                                                                                                      name="compartment"
+                                                                                                      value="<fmt:message key="index.choose"/>"><br>
                         </form>
                     </c:if>
                     <c:if test="${route.common>0}">
@@ -124,7 +126,8 @@
                             <input type="hidden" id="price" name="price" value="${route.priceForCommon}">
                             <input type="hidden" id="arrive_time" name="arrive_time" value="${route.arrive_time}">
                             <input type="hidden" id="depart_time" name="depart_time" value="${route.depart_time}">
-                            <fmt:message key="index.common"/> : ${route.common * 68} <input type="submit" name="common" value="<fmt:message key="index.choose"/>"><br>
+                            <fmt:message key="index.common"/> : ${route.common * 68} <input type="submit" name="common"
+                                                                                            value="<fmt:message key="index.choose"/>"><br>
                         </form>
                     </c:if>
                 </td>

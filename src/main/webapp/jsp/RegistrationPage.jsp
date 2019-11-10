@@ -2,15 +2,14 @@
 <%@ page isELIgnored="false"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
-<fmt:setLocale value="ru" />
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="locale"/>
 <html>
 <head>
     <title><fmt:message key="reg.title"/></title>
     <script src="../javaScript/ValidationRegistrationPage.js"></script>
 </head>
-<body>
 <body><a href="/"><fmt:message key="login.home"/></a>
 <c:if test = "${requestScope.error_bool == true}">
 <p style="color:red"><c:out value = "${requestScope.error}"/><p>

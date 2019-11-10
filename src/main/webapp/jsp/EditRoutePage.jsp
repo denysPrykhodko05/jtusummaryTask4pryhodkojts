@@ -1,9 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page isELIgnored="false" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
-<%@ taglib prefix="ftm" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<fmt:setLocale value="ru" />
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="locale"/>
 <html>
 <head>
@@ -180,7 +179,7 @@
 </c:when>
 </c:choose>
 <c:if test="${requestScope.errorUpdate==true}">
-    <p style="color: red;"><ftm:message key="editRoute.errorUpdate"/></p><br>
+    <p style="color: red;"><fmt:message key="editRoute.errorUpdate"/></p><br>
 </c:if>
 </body>
 </html>

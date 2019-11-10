@@ -8,10 +8,9 @@ import ua.nure.prykhodko.entity.User;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 
-public class UserDAO extends AbstractController<User, Integer> implements userDAO {
+public class UserDAO implements CrudDAO<User, Integer> , userDAO {
 
     private static final String SQL_FIND_ALL_USERS = "SELECT * FROM USERS";
     private static final String SQL_FIND_USER_BY_LOGIN = "SELECT * FROM users WHERE login = (?)";

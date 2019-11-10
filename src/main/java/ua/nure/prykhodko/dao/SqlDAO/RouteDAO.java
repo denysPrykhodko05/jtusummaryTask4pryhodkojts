@@ -11,7 +11,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
 
-public class RouteDAO extends AbstractController<Route, Integer> {
+public class RouteDAO implements CrudDAO<Route, Integer> {
 
     private static final String SQL_GET_ROUTE_BY_ID = "SELECT * FROM route WHERE id = (?)";
     private static final String SQL_GET_ROUTE_ID_BY_STATION_ID = "SELECT route_id FROM STATION_ROUTE\n" +

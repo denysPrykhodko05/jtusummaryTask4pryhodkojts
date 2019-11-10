@@ -1,5 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="${sessionScope.locale}"/>
+<fmt:setBundle basename="locale"/>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -9,12 +11,12 @@
 <body>
 
 <form name="addRouteForm" method="post" onsubmit="return routeValidation('addRouteForm','startName','finalName')">
-    Start station name: <input type="text" name="startName" value="${requestScope.startName}"> <input type="date" id="departDate" name="departDate"
+    <fmt:message key="ticket.startStation"/> : <input type="text" name="startName" value="${requestScope.startName}"> <input type="date" id="departDate" name="departDate"
                                                                     value=""> <input type="time"
                                                                                      name="departTime"
                                                                                      value="00:00"><br>
 
-    Final station name: <input type="text" name="finalName" value="${requestScope.finalName}"> <input type="date" id="arriveDate" name="arriveDate"
+    <fmt:message key="ticket.finalStation"/> : <input type="text" name="finalName" value="${requestScope.finalName}"> <input type="date" id="arriveDate" name="arriveDate"
                                                                     value=""> <input type="time"
                                                                                      name="arriveTime"
                                                                                      value="00:00"><br>
@@ -29,27 +31,27 @@
 </form>
 
 <c:if test="${requestScope.errorStart == true}">
-    <p style="color: red;">Incorrect start station</p>
+    <p style="color: red;"><fmt:message key="edit.errorStartStationName"/></p>
 </c:if>
 
 <c:if test="${requestScope.errorTime == true}">
-    <p style="color: red;">Incorrect time</p>
+    <p style="color: red;"><fmt:message key="edit.errorTime"/></p>
 </c:if>
 
 <c:if test="${requestScope.errorFinal == true}">
-    <p style="color: red;">Incorrect final station</p>
+    <p style="color: red;"><fmt:message key="edit.errorFinalStationName"/></p>
 </c:if>
 
 <c:if test="${requestScope.errorArrive == true}">
-    <p style="color: red;">Incorrect arrive date</p>
+    <p style="color: red;"><fmt:message key="edit.errorTime"/></p>
 </c:if>
 
 <c:if test="${requestScope.errorDepart == true}">
-    <p style="color: red;">Incorrect depart date</p>
+    <p style="color: red;"><fmt:message key="edit.errorTime"/></p>
 </c:if>
 
 <c:if test="${requestScope.errorTrain == true}">
-    <p style="color: red;">Incorrect train date</p>
+    <p style="color: red;"><fmt:message key="editRoute.errorTrain"/></p>
 </c:if>
 
 </body>

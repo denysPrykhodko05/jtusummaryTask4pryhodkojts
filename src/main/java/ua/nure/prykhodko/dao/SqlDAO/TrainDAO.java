@@ -10,7 +10,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
 
-public class TrainDAO extends AbstractController<Train, Integer> {
+public class TrainDAO implements CrudDAO<Train, Integer> {
 
     private static final String SQL_GET_TRAIN_BY_ID = "SELECT * FROM train WHERE id=(?)";
     private static final String SQL_GET_PLACES_BY_TRAIN="SELECT * FROM sold_tickets WHERE train_id=(?) and date=(?) and start_station=(?) and final_station=(?)"; @Override

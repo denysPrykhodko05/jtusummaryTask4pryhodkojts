@@ -22,7 +22,7 @@ public class UserTicketServlet extends HttpServlet {
         UserDAO userDAO = (UserDAO) servletContext.getAttribute("userDAO");
         TicketDAO ticketDAO = (TicketDAO) servletContext.getAttribute("ticketDAO");
         final String login = (String) session.getAttribute("login");
-        BoughtTicket bt = new BoughtTicket();
+        BoughtTicket bt;
 
         int ticket_id = userDAO.getTicketId(login);
 

@@ -7,7 +7,7 @@ import ua.nure.prykhodko.utils.StationComparator;
 import java.sql.*;
 import java.util.*;
 
-public class StationDAO extends AbstractController<Station, Integer> {
+public class StationDAO implements CrudDAO<Station, Integer> {
 
     private static final String SQL_GET_STATION_BY_NAME = "SELECT * FROM station WHERE name=(?)";
     private static final String SQL_GET_TIME_FOR_STATION_BY_ID = "SELECT arrive_time, depart_time FROM station_route WHERE station_id=(?) and route_id=(?)";

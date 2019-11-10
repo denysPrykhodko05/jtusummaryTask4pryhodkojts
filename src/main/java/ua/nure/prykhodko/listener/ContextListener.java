@@ -6,6 +6,7 @@ import ua.nure.prykhodko.entity.User;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.http.HttpSession;
 
 public class ContextListener implements ServletContextListener {
     @Override
@@ -15,7 +16,6 @@ public class ContextListener implements ServletContextListener {
         StationDAO stationDAO = new StationDAO();
         TrainDAO trainDAO = new TrainDAO();
         TicketDAO ticketDAO = new TicketDAO();
-
         ServletContext servletContext = servletContextEvent.getServletContext();
 
         servletContext.setAttribute("userDAO", userDAO);
@@ -23,6 +23,7 @@ public class ContextListener implements ServletContextListener {
         servletContext.setAttribute("stationDAO", stationDAO);
         servletContext.setAttribute("trainDAO", trainDAO);
         servletContext.setAttribute("ticketDAO", ticketDAO);
+        servletContext.setAttribute("lang","en");
 
     }
 
