@@ -1,7 +1,7 @@
 package ua.nure.prykhodko.dao.SqlDAO;
 
 import ua.nure.prykhodko.constants.Fields;
-import ua.nure.prykhodko.bean.Route;
+import ua.nure.prykhodko.entity.Route;
 import ua.nure.prykhodko.entity.Station;
 import ua.nure.prykhodko.entity.Train;
 
@@ -29,6 +29,9 @@ public class RouteDAO extends AbstractController<Route, Integer> {
     private static final String SQL_GET_START_STATION_ID = "SELECT start_station FROM route WHERE id=?";
     private static final String SQL_GET_FINAL_STATION_ID = "SELECT final_station FROM route WHERE id=?";
     private static final String SQL_DELETE_STATION_FROM_ROUTE = "DELETE FROM station_route WHERE station_id=? and route_id=?";
+    private static final String SQL_ADD_ROUTE = "INSERT INTO route(train,start_station,final_station,start_time,arrive_time) VALUES(?,?,?,?,?)";
+    private static final String SQL_DELETE_ROUTE_FROM_STATION_ROUTE = "Delete from station_route where route_id=?";
+    private static final String SQL_DELETE_ROUTE_BY_ID = "DELETE FROM route WHERE id=?";
 
     @Override
     public List<Route> getAll() {
@@ -186,26 +189,29 @@ public class RouteDAO extends AbstractController<Route, Integer> {
         return null;
     }
 
-    public boolean isExistRoute(int id){
+    public boolean isExistRoute(int id) {
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
-        try{
+        try {
             con = ConnectionPool.getInstance().getConnection();
             pstm = con.prepareStatement(SQL_GET_ROUTE_BY_ID);
-            rs =pstm.executeQuery();
-            while (rs.next()){
-                if (rs.getInt(Fields.ENTITY_ID)==id){
+            pstm.setInt(1,id);
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                if (rs.getInt(Fields.ENTITY_ID) == id) {
                     return true;
                 }
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-        }finally {
-            ConnectionPool.getInstance().close(con,pstm,rs);
+        } finally {
+            ConnectionPool.getInstance().close(con, pstm, rs);
         }
         return false;
     }
+
+
 
     public boolean addStartStationInStationRoute(Station station) {
         Connection con = null;
@@ -228,7 +234,7 @@ public class RouteDAO extends AbstractController<Route, Integer> {
         return false;
     }
 
-    public boolean addFinalStationInRoute(Station station){
+    public boolean addFinalStationInRoute(Station station) {
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
@@ -239,7 +245,7 @@ public class RouteDAO extends AbstractController<Route, Integer> {
             pstm.setInt(1, station.getId());
             pstm.setInt(2, station.getRoute_id());
             pstm.setTimestamp(3, station.getArrive_time(), cal);
-           return pstm.executeUpdate()==1;
+            return pstm.executeUpdate() == 1;
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
             e.printStackTrace();
@@ -250,19 +256,19 @@ public class RouteDAO extends AbstractController<Route, Integer> {
     }
 
     public boolean updateStartStationInRoute(int route_id, int station_id, Timestamp time) {
-       return updateStationInRoute(station_id,route_id,time,SQL_UPDATE_START_STATION);
+        return updateStationInRoute(station_id, route_id, time, SQL_UPDATE_START_STATION);
     }
 
-    public boolean updateFinalStationInRoute(int route_id, int station_id, Timestamp time){
-        return updateStationInRoute(station_id, route_id, time,SQL_UPDATE_FINAL_STATION);
+    public boolean updateFinalStationInRoute(int route_id, int station_id, Timestamp time) {
+        return updateStationInRoute(station_id, route_id, time, SQL_UPDATE_FINAL_STATION);
     }
 
     public int getStartStationInRoute(int route_id) {
-    return     getStationInRoute(route_id,SQL_GET_START_STATION_ID,Fields.ROUTE_START_STATION);
+        return getStationInRoute(route_id, SQL_GET_START_STATION_ID, Fields.ROUTE_START_STATION);
     }
 
-    public int getFinalStationInRoute(int route_id){
-       return getStationInRoute(route_id,SQL_GET_FINAL_STATION_ID,Fields.ROUTE_FINAL_STATION);
+    public int getFinalStationInRoute(int route_id) {
+        return getStationInRoute(route_id, SQL_GET_FINAL_STATION_ID, Fields.ROUTE_FINAL_STATION);
     }
 
     public boolean addStationToRoute(Station station) {
@@ -288,15 +294,34 @@ public class RouteDAO extends AbstractController<Route, Integer> {
 
     @Override
     public boolean delete(Integer id) {
-        return false;
+        return deleteRoute(id,SQL_DELETE_ROUTE_BY_ID);
     }
 
     @Override
     public boolean addEntity(Route entity) {
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+2:00"));
+        try {
+            con = ConnectionPool.getInstance().getConnection();
+            pstm = con.prepareStatement(SQL_ADD_ROUTE);
+            pstm.setInt(1,entity.getTrainId());
+            pstm.setInt(2,entity.getStartPoint_id());
+            pstm.setInt(3,entity.getFinalPoint_id());
+            pstm.setTimestamp(4,entity.getDepart_time(),cal);
+            pstm.setTimestamp(5,entity.getArrive_time(),cal);
+            return pstm.executeUpdate()==1;
+        } catch (SQLException e) {
+            ConnectionPool.getInstance().rollback(con);
+            e.printStackTrace();
+        }finally {
+            ConnectionPool.getInstance().close(con,pstm,rs);
+        }
         return false;
     }
 
-    public int getStationInRoute(int route_id,String SQL, String rsString){
+    public int getStationInRoute(int route_id, String SQL, String rsString) {
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
@@ -312,7 +337,7 @@ public class RouteDAO extends AbstractController<Route, Integer> {
         return 0;
     }
 
-    private boolean updateStationInRoute(int station_id, int route_id, Timestamp time, String SQL){
+    private boolean updateStationInRoute(int station_id, int route_id, Timestamp time, String SQL) {
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
@@ -334,7 +359,11 @@ public class RouteDAO extends AbstractController<Route, Integer> {
         return false;
     }
 
-    public boolean deleteStationFromRoute(int station_id,int route_id){
+    public boolean deleteRouteFromStationRoute(int id){
+       return deleteRoute(id,SQL_DELETE_ROUTE_FROM_STATION_ROUTE);
+    }
+
+    public boolean deleteStationFromRoute(int station_id, int route_id) {
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
@@ -342,8 +371,28 @@ public class RouteDAO extends AbstractController<Route, Integer> {
         con = ConnectionPool.getInstance().getConnection();
         try {
             pstm = con.prepareStatement(SQL_DELETE_STATION_FROM_ROUTE);
-            pstm.setInt(1,station_id);
-            pstm.setInt(2,route_id);
+            pstm.setInt(1, station_id);
+            pstm.setInt(2, route_id);
+            return pstm.executeUpdate() == 1;
+        } catch (SQLException e) {
+            ConnectionPool.getInstance().rollback(con);
+            e.printStackTrace();
+        } finally {
+            ConnectionPool.getInstance().close(con, pstm, rs);
+        }
+        return false;
+    }
+
+    private boolean deleteRoute(int id,String SQL){
+
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+
+        con = ConnectionPool.getInstance().getConnection();
+        try {
+            pstm = con.prepareStatement(SQL);
+            pstm.setInt(1,id);
             return pstm.executeUpdate()==1;
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);

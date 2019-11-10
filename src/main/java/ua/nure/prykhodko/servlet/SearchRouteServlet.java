@@ -4,7 +4,7 @@ import ua.nure.prykhodko.dao.SqlDAO.RouteDAO;
 import ua.nure.prykhodko.dao.SqlDAO.StationDAO;
 import ua.nure.prykhodko.dao.SqlDAO.TrainDAO;
 import ua.nure.prykhodko.bean.FinalRoute;
-import ua.nure.prykhodko.bean.Route;
+import ua.nure.prykhodko.entity.Route;
 import ua.nure.prykhodko.entity.Station;
 import ua.nure.prykhodko.entity.Train;
 import ua.nure.prykhodko.utils.TimeUtils;

@@ -1,6 +1,6 @@
 package ua.nure.prykhodko.servlet;
 
-import ua.nure.prykhodko.bean.Route;
+import ua.nure.prykhodko.entity.Route;
 import ua.nure.prykhodko.dao.SqlDAO.RouteDAO;
 import ua.nure.prykhodko.dao.SqlDAO.StationDAO;
 import ua.nure.prykhodko.entity.Station;
@@ -15,12 +15,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 
 @WebServlet("/admin/routeEdit")
 public class RouteEditServlet extends HttpServlet {
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final String route_number = req.getParameter("route_number");
@@ -31,8 +31,8 @@ public class RouteEditServlet extends HttpServlet {
 
         if (!routeDAO.isExistRoute(Integer.parseInt(route_number))) {
             req.setAttribute("errorFindRoute", true);
-            req.setAttribute("route_number",route_number);
-            req.getRequestDispatcher("/jsp/EditRoutePage.jsp").forward(req,resp);
+            req.setAttribute("route_number", route_number);
+            req.getRequestDispatcher("/jsp/EditRoutePage.jsp").forward(req, resp);
         } else {
             if (choice == null) {
                 req.setAttribute("errorNothingChosen", true);
@@ -184,7 +184,7 @@ public class RouteEditServlet extends HttpServlet {
                 if (stationName != null && Validation.isCorrectStationName(stationName) && route_id != null) {
                     int station_id = stationDAO.getEntityID(stationName);
                     routeDAO.deleteStationFromRoute(station_id, Integer.parseInt(route_id));
-                    resp.sendRedirect("/");
+                    resp.sendRedirect("/admin");
                 }
             } else if (addStation != null && !addStation.equals("")) {
                 final String station_name = req.getParameter("stationName");
@@ -192,14 +192,16 @@ public class RouteEditServlet extends HttpServlet {
                 final String arrive_time = req.getParameter("arriveTime");
                 final String depart_date = req.getParameter("departDate");
                 final String depart_time = req.getParameter("departTime");
+                Timestamp timestampArrive = null;
+                Timestamp timestampDepart = null;
                 Station station = new Station();
                 int station_id = 0;
-                if (arrive_date != null && arrive_date.equals("") && arrive_time != null && arrive_time.equals("")) {
-                    Timestamp timestampArrive = TimeUtils.parseStringToTimestamp(arrive_date, arrive_time);
+                if (arrive_date != null && !arrive_date.equals("") && arrive_time != null && !arrive_time.equals("")) {
+                    timestampArrive = TimeUtils.parseStringToTimestamp(arrive_date, arrive_time);
                     station.setArrive_time(timestampArrive);
                 }
-                if (depart_date != null && depart_date.equals("") && depart_time != null && depart_time.equals("")) {
-                    Timestamp timestampDepart = TimeUtils.parseStringToTimestamp(depart_date, depart_time);
+                if (depart_date != null && !depart_date.equals("") && depart_time != null && !depart_time.equals("")) {
+                    timestampDepart = TimeUtils.parseStringToTimestamp(depart_date, depart_time);
                     station.setDepart_time(timestampDepart);
                 }
                 if (station_name != null && Validation.isCorrectStationName(station_name)) {
@@ -218,6 +220,8 @@ public class RouteEditServlet extends HttpServlet {
                     station_id = stationDAO.getEntityID(station_name);
                     station.setId(station_id);
                     station.setRoute_id(Integer.parseInt(route_id));
+                    station.setArrive_time(timestampArrive);
+                    station.setDepart_time(timestampDepart);
                     routeDAO.addStationToRoute(station);
                     resp.sendRedirect("/admin");
                 } else {

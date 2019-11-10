@@ -74,9 +74,11 @@ public class TimeUtils {
     }
 
     public static Timestamp parseStringToTimestamp(String date, String time){
-        StringBuilder sb = new StringBuilder();
-        sb.append(date).append(" ").append(time).append(":00").append(".0");
-        return Timestamp.valueOf(sb.toString());
+        if (date!=null && time!=null) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(date).append(" ").append(time).append(":00").append(".0");
+            return Timestamp.valueOf(sb.toString());
+        }return null;
     }
 
 }

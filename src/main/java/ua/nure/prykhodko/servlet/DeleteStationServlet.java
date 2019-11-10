@@ -1,6 +1,5 @@
 package ua.nure.prykhodko.servlet;
 
-import ua.nure.prykhodko.bean.Route;
 import ua.nure.prykhodko.dao.SqlDAO.RouteDAO;
 import ua.nure.prykhodko.dao.SqlDAO.StationDAO;
 import ua.nure.prykhodko.utils.Validation;
@@ -19,15 +18,19 @@ public class DeleteStationServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ServletContext servletContext = req.getServletContext();
-        StationDAO stationDAO = (StationDAO) servletContext.getAttribute("stationDAO");
         RouteDAO routeDAO = (RouteDAO) servletContext.getAttribute("routeDAO");
+        StationDAO stationDAO = (StationDAO) servletContext.getAttribute("stationDAO");
         final String name = req.getParameter("station_name");
         int id = 0;
 
         if (Validation.isCorrectStationName(name)) {
             id = stationDAO.getEntityID(name);
-            if (id > 0 && stationDAO.delete(id)) {
+            if (id > 0  && stationDAO.delete(id)) {
                 req.setAttribute("success", true);
+                req.getRequestDispatcher("/jsp/DeleteStationPage.jsp").forward(req, resp);
+            } else {
+                req.setAttribute("error", true);
+                req.setAttribute("station_name",name);
                 req.getRequestDispatcher("/jsp/DeleteStationPage.jsp").forward(req, resp);
             }
         } else {

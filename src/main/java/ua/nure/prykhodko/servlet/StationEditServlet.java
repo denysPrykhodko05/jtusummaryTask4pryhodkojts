@@ -4,6 +4,7 @@ import ua.nure.prykhodko.dao.SqlDAO.RouteDAO;
 import ua.nure.prykhodko.dao.SqlDAO.StationDAO;
 import ua.nure.prykhodko.entity.Station;
 import ua.nure.prykhodko.utils.TimeUtils;
+import ua.nure.prykhodko.utils.Validation;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -43,7 +44,7 @@ public class StationEditServlet extends HttpServlet {
             String depart_time = req.getParameter("depart_time");
             req.setAttribute("station_chosen", true);
             req.setAttribute("input", true);
-            req.setAttribute("id",id);
+            req.setAttribute("id", id);
             req.setAttribute("route_id", route_id);
             req.setAttribute("name", name);
             req.setAttribute("arrive_time", arrive_time);
@@ -64,6 +65,7 @@ public class StationEditServlet extends HttpServlet {
         final String newDepartDate = req.getParameter("newDepartDate");
         final String newArriveTime = req.getParameter("NewArriveTime");
         final String newDepartTime = req.getParameter("NewDepartTime");
+        boolean flag = false;
         Timestamp newArriveTimestamp = null;
         Timestamp newDepartTimestamp = null;
         Station stationOld;
@@ -81,20 +83,56 @@ public class StationEditServlet extends HttpServlet {
         stationOld.setRoute_id(Integer.parseInt(route_id));
         stationDAO.setStationTime(stationOld);
         stationNew.setId(Integer.parseInt(id));
-        if (newName != null && !newName.equals("") && !stationOld.getName().equals(newName)) {
-            stationNew.setName(newName);
-            stationDAO.update(stationNew);
+        if (newName != null && !stationOld.getName().equals(newName) && !newName.equals("")) {
+            if (Validation.isCorrectStationName(newName)) {
+                if (newArriveTimestamp != null && newDepartTimestamp != null && newArriveTimestamp.getTime() - newDepartTimestamp.getTime() >=0) {
+                    req.setAttribute("errorTime", true);
+                    req.setAttribute("id", id);
+                    req.setAttribute("route_id", route_id);
+                    req.setAttribute("input", true);
+                    req.setAttribute("station_chosen", true);
+                    req.setAttribute("newName", newName);
+                    flag = false;
+                    req.getRequestDispatcher("/jsp/EditStationPage.jsp").forward(req, resp);
+                } else {
+                    stationNew.setName(newName);
+                    stationDAO.update(stationNew);
+                    flag = true;
+                }
+            } else {
+                req.setAttribute("id", id);
+                req.setAttribute("route_id", route_id);
+                req.setAttribute("input", true);
+                req.setAttribute("errorName", true);
+                req.setAttribute("station_chosen", true);
+                req.setAttribute("newName", newName);
+                req.getRequestDispatcher("/jsp/EditStationPage.jsp").forward(req, resp);
+            }
+        }else{
+            if (newArriveTimestamp != null && newDepartTimestamp != null && newArriveTimestamp.getTime() - newDepartTimestamp.getTime() >=0) {
+                req.setAttribute("errorTime", true);
+                req.setAttribute("id", id);
+                req.setAttribute("newName", newName);
+                req.setAttribute("route_id", route_id);
+                req.setAttribute("input", true);
+                req.setAttribute("station_chosen", true);
+                flag = false;
+                req.getRequestDispatcher("/jsp/EditStationPage.jsp").forward(req, resp);
+            }
         }
 
-        if (newArriveTimestamp != null && !newArriveTimestamp.equals("") && !stationOld.getArrive_time().equals(newArriveTimestamp)) {
-            stationNew.setArrive_time(newArriveTimestamp);
-            routeDAO.updateRouteArriveTime(Integer.parseInt(id), Integer.parseInt(route_id), stationNew.getArrive_time());
-        }
 
-        if (newDepartTimestamp != null && !newDepartTimestamp.equals("") && !stationOld.getDepart_time().equals(Timestamp.valueOf(newDepartTime))) {
-            stationNew.setDepart_time(newDepartTimestamp);
-            routeDAO.updateRouteDepartTime(Integer.parseInt(id), Integer.parseInt(route_id), stationNew.getDepart_time());
+            if (newArriveTimestamp != null && !stationOld.getArrive_time().equals(newArriveTimestamp)) {
+                stationNew.setArrive_time(newArriveTimestamp);
+                routeDAO.updateRouteArriveTime(Integer.parseInt(id), Integer.parseInt(route_id), stationNew.getArrive_time());
+            }
+
+            if (newDepartTimestamp != null && !stationOld.getDepart_time().equals(newDepartTimestamp)) {
+                stationNew.setDepart_time(newDepartTimestamp);
+                routeDAO.updateRouteDepartTime(Integer.parseInt(id), Integer.parseInt(route_id), stationNew.getDepart_time());
+            }
+        if (flag) {
+            resp.sendRedirect("/admin");
         }
-        resp.sendRedirect("/admin");
     }
 }

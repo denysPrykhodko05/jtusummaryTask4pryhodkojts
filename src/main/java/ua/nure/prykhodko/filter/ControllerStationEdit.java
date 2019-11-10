@@ -37,9 +37,11 @@ public class ControllerStationEdit implements Filter {
                     break;
 
                 case "Add route":
+                    resp.sendRedirect("/admin/routeAdd");
                     break;
 
                 case "Delete route":
+                    req.getRequestDispatcher("/jsp/DeleteRoutePage.jsp").forward(req,resp);
                     break;
 
                 default:

@@ -20,7 +20,7 @@ public class StationDAO extends AbstractController<Station, Integer> {
     private static final String SQL_UPDATE_NAME = "UPDATE station SET name=? WHERE id=?";
     private static final String SQL_GET_ENTITY_ID = "SELECT id FROM station WHERE name=?";
     private static final String SQL_ADD_STATION = "INSERT into station(name) values (?);";
-    private static final String SQL_DELETE_STATION_IN_ROUTE="DELETE FROM station_route WHERE station_id=?";
+    private static final String SQL_DELETE_STATION_IN_ROUTE = "DELETE FROM station_route WHERE station_id=?";
     private static final String SQL_DELETE_STATION_IN_STATION = "DELETE FROM station WHERE id=?";
 
     ConnectionPool connectionPool;
@@ -41,7 +41,7 @@ public class StationDAO extends AbstractController<Station, Integer> {
             con = ConnectionPool.getInstance().getConnection();
             pstm = con.prepareStatement(SQL_UPDATE_NAME);
             pstm.setString(1, entity.getName());
-            pstm.setInt(2,entity.getId());
+            pstm.setInt(2, entity.getId());
             pstm.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -57,16 +57,16 @@ public class StationDAO extends AbstractController<Station, Integer> {
         try {
             con = ConnectionPool.getInstance().getConnection();
             pstm = con.prepareStatement(SQL_GET_ENTITY_ID);
-            pstm.setString(1,name);
+            pstm.setString(1, name);
             rs = pstm.executeQuery();
-            if (rs.next()){
+            if (rs.next()) {
                 return rs.getInt(Fields.ENTITY_ID);
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
             e.printStackTrace();
-        }finally {
-            ConnectionPool.getInstance().close(con, pstm,rs);
+        } finally {
+            ConnectionPool.getInstance().close(con, pstm, rs);
         }
         return 0;
     }
@@ -109,8 +109,8 @@ public class StationDAO extends AbstractController<Station, Integer> {
         try {
             con = ConnectionPool.getInstance().getConnection();
             pstm = con.prepareStatement(SQL_GET_TIME_BY_ID);
-            pstm.setInt(1,station.getId());
-            pstm.setInt(2,station.getRoute_id());
+            pstm.setInt(1, station.getId());
+            pstm.setInt(2, station.getRoute_id());
             rs = pstm.executeQuery();
             if (rs.next()) {
                 station.setArrive_time(rs.getTimestamp(Fields.STATION_ARRIVE_TIME, cal));
@@ -188,46 +188,46 @@ public class StationDAO extends AbstractController<Station, Integer> {
 
     @Override
     public boolean delete(Integer id) {
-        Connection con=null;
+        Connection con = null;
         PreparedStatement pstm = null;
-        ResultSet rs= null;
+        ResultSet rs = null;
         try {
             con = ConnectionPool.getInstance().getConnection();
             pstm = con.prepareStatement(SQL_DELETE_STATION_IN_ROUTE);
-            pstm.setInt(1,id);
-            if (pstm.executeUpdate()==1){
-                ConnectionPool.getInstance().close(con,pstm,rs);
+            pstm.setInt(1, id);
+            if (pstm.executeUpdate() == 1) {
+                ConnectionPool.getInstance().close(con, pstm, rs);
                 con = ConnectionPool.getInstance().getConnection();
                 pstm = con.prepareStatement(SQL_DELETE_STATION_IN_STATION);
-                pstm.setInt(1,id);
-                return pstm.executeUpdate()==1;
-            }else {
+                pstm.setInt(1, id);
+                return pstm.executeUpdate() == 1;
+            } else {
                 return false;
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
             e.printStackTrace();
-        }finally {
-            ConnectionPool.getInstance().close(con,pstm,rs);
+        } finally {
+            ConnectionPool.getInstance().close(con, pstm, rs);
         }
         return false;
     }
 
     @Override
     public boolean addEntity(Station entity) {
-        Connection con=null;
+        Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
         try {
             con = ConnectionPool.getInstance().getConnection();
             pstm = con.prepareStatement(SQL_ADD_STATION);
             pstm.setString(1, entity.getName());
-            return pstm.executeUpdate()==1;
+            return pstm.executeUpdate() == 1;
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
             e.printStackTrace();
-        }finally {
-            ConnectionPool.getInstance().close(con, pstm,rs);
+        } finally {
+            ConnectionPool.getInstance().close(con, pstm, rs);
         }
 
         return false;

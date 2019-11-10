@@ -20,18 +20,24 @@ public class Station {
         this.route_id = route_id;
     }
 
-    public Station(){
+    public Station() {
 
     }
-   public Station(int id, String name){
+
+    public Station(String name) {
+        this.name = name;
+    }
+
+    public Station(int id, String name) {
         this.id = id;
         this.name = name;
     }
-    public Station(int id, String name, Timestamp arrive_time,Timestamp depart_time){
+
+    public Station(int id, String name, Timestamp arrive_time, Timestamp depart_time) {
         this.id = id;
         this.name = name;
-        this.arrive_time=arrive_time;
-        this.depart_time=depart_time;
+        this.arrive_time = arrive_time;
+        this.depart_time = depart_time;
     }
 
     public void setId(int id) {

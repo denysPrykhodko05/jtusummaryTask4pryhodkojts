@@ -63,7 +63,8 @@
         <form method="post" name="startStationForm"
               onsubmit="return isCorrectStationName('startStationForm','startName')">
             New start station: <input id="startName" type="text" name="startName"><br>
-            Depart time: <input type="date" name="departDate"> <input type="time" name="departTime"><br>
+            Depart time: <input type="date" id="vDate" name="departDate"> <input type="time" name="departTime"><br>
+            <script type="text/javascript" src="../javaScript/GetTodayDay.js"></script>
             <input type="hidden" name="route_number" value="${requestScope.route_number}">
             <input type="submit" value="Ok">
         </form>
@@ -73,7 +74,44 @@
         <form method="post" name="finalStationForm"
               onsubmit="return isCorrectStationName('finalStationForm','finalName')">
             New start station: <input type="text" id="finalName" name="finalName"><br>
-            Depart time: <input type="date" name="arriveDate"> <input type="time" name="arriveTime"><br>
+            Arrive time: <input type="date" id="arriveDate1" min="" max="" value="" name="arriveDate"> <input type="time" name="arriveTime" value="00:00"><br>
+            <script>var today = new Date();
+            var date = today.getDate();
+            var dateMax = date;
+            var month = today.getMonth() + 1;
+            var monthMax = month + 3;
+            var year = today.getFullYear();
+            var yearMax = year;
+            var dateA = document.querySelector('#arriveDate1');
+
+            if (month < 10)
+                month = "0" + month;
+
+            if (monthMax > 12) {
+                monthMax = monthMax - 12;
+                yearMax += 1;
+            }
+
+            if (monthMax == 2 && dateMax > 28) {
+                monthMax += 1;
+                dateMax = "01";
+            }
+
+            if (monthMax < 10)
+                monthMax = "0" + monthMax;
+
+            if (date < 10)
+                date = "0" + date;
+
+            if (dateMax < 10)
+                dateMax = "0" + dateMax;
+
+            var Max = yearMax + "-" + monthMax + "-" + dateMax;
+            var dateT = year + "-" + month + "-" + date;
+            dateA.setAttribute('value', dateT.toString());
+            dateA.setAttribute('min', dateT.toString());
+            dateA.setAttribute('max', Max.toString());
+            </script>
             <input type="hidden" name="route_number" value="${requestScope.route_number}">
             <input type="submit" value="Ok">
         </form>
@@ -91,18 +129,58 @@
     </c:when><c:when test="${requestScope.addStation==true}">
     <form method="post" name="addStationForm" onsubmit="return isCorrectStationName('deleteStationForm','stationName')">
         Station name: <input type="text" id="addStation" name="stationName"><br>
-        Arrive time: <input type="date" name="arriveDate"> <input type="time" name="arriveTime" value="00:00"><br>
-        Depart time: <input type="date" name="departDate"> <input type="time" name="departTime" value="00:00"><br>
+        Arrive time: <input type="date" id="arriveDate" name="arriveDate"> <input type="time" name="arriveTime" value="00:00"><br>
+        Depart time: <input type="date" id="departDate" name="departDate"> <input type="time" name="departTime" value="00:00"><br>
+        <script>var today = new Date();
+        var date = today.getDate();
+        var dateMax = date;
+        var month = today.getMonth() + 1;
+        var monthMax = month + 3;
+        var year = today.getFullYear();
+        var yearMax = year;
+        var dateD = document.querySelector('#departDate');
+        var dateA = document.querySelector('#arriveDate');
+
+        if (month < 10)
+            month = "0" + month;
+
+        if (monthMax > 12) {
+            monthMax = monthMax - 12;
+            yearMax += 1;
+        }
+
+        if (monthMax == 2 && dateMax > 28) {
+            monthMax += 1;
+            dateMax = "01";
+        }
+
+        if (monthMax < 10)
+            monthMax = "0" + monthMax;
+
+        if (date < 10)
+            date = "0" + date;
+
+        if (dateMax < 10)
+            dateMax = "0" + dateMax;
+
+        var Max = yearMax + "-" + monthMax + "-" + dateMax;
+        var dateT = year + "-" + month + "-" + date;
+        dateD.setAttribute('value', dateT.toString());
+        dateA.setAttribute('value', dateT.toString());
+        dateD.setAttribute('min', dateT.toString());
+        dateD.setAttribute('max', Max.toString());
+        dateA.setAttribute('min', dateT.toString());
+        dateA.setAttribute('max', Max.toString());
+        </script>
         <input type="hidden" name="addStation" value="true">
         <input type="hidden" name="route_number" value="${requestScope.route_number}">
         <input type="submit" value="Ok">
 
-        <c:if test="${errorAddStationName == true}">
+        <c:if test="${requestScope.errorAddStationName == true}">
                 <p style="color: red">Incorrect input</p><br>
         </c:if>
     </form>
 </c:when>
-
 </c:choose>
 <c:if test="${requestScope.errorUpdate==true}">
     <p style="color: red;">Something gone wrong, try later!</p><br>

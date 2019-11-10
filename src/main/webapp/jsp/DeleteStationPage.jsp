@@ -16,14 +16,14 @@
 <body>
 <a href="/admin">HOME</a><br><a href="/logout">Logout</a><br>
 <form name="deleteForm" method="post" onsubmit="return isCorrectStationName('deleteForm','station_name')" action="<c:url value="/admin/stationEdit/delete"/>">
-Station name: <input type="text" id="station_name" name="station_name"><br>
+Station name: <input type="text" id="station_name" name="station_name" value="${requestScope.station_name}"><br>
 <input type="submit" value="Ok"><br>
 </form>
 <c:if test="${requestScope.success ==true}">
     <p style="color: green;">Success</p><br>
 </c:if>
 <c:if test="${requestScope.error==true}">
-    <p style="color: green;">Incorrect input</p><br>
+    <p style="color: red;">Incorrect input</p><br>
 </c:if>
 </body>
 </html>
