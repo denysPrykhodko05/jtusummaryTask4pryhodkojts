@@ -1,24 +1,20 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: user1
-  Date: 07.11.2019
-  Time: 22:21
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page isELIgnored="false" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<fmt:setLocale value="ru" />
+<fmt:setBundle basename="locale"/>
 <html>
 <head>
     <title>Add station</title>
     <script src="../javaScript/StationNameValidation.js"></script>
 </head>
 <body>
-<a href="/admin">HOME</a><br><a href="/logout">Logout</a><br>
+<a href="/admin"><fmt:message key="login.home"/></a><br><a href="/logout"><fmt:message key="index.Logout"/></a><br>
 <form name="addStationForm" method="post" action="<c:url value="/admin/stationEdit/add"/>" onsubmit="return isCorrectStationName('addStationForm','name')">
-    Name: <input type="text" name="name" value="${requestScope.station_name}"><br>
-    Depart date and time: <input type="date"id="departDate" min="" max="" name="depart_date"> <input type="time" name="depart_time" value="00:00"><br>
-    Arrive date and time: <input type="date" id="arriveDate" min="" max="" name="arrive_date"> <input type="time" name="arrive_time" value="00:00"><br>
+    <fmt:message key="station.stationName"/>: <input type="text" name="name" value="${requestScope.station_name}"><br>
+    <fmt:message key="ticket.dateAndTimeDepart"/> : <input type="date"id="departDate" min="" max="" name="depart_date"> <input type="time" name="depart_time" value="00:00"><br>
+    <fmt:message key="station.arriveDateAndTime"/> : <input type="date" id="arriveDate" min="" max="" name="arrive_date"> <input type="time" name="arrive_time" value="00:00"><br>
     <script>var today = new Date();
     var date = today.getDate();
     var dateMax = date;
@@ -64,13 +60,13 @@
     <input type="submit" value="OK">
 </form>
 <c:if test="${requestScope.success == true}">
-    <p style="color: green">Success</p>
+    <p style="color: green"><fmt:message key="addStation.success"/></p>
 </c:if>
 <c:if test="${requestScope.errorRoute == true}">
-    <p style="color: red">Incorrect route</p>
+    <p style="color: red"><fmt:message key="addStation.errorRoute"/></p>
 </c:if>
 <c:if test="${requestScope.errorTime == true}">
-    <p style="color: red">Incorrect time</p>
+    <p style="color: red"><fmt:message key="addStation.errorTime"/></p>
 </c:if>
 <c:if test="${requestScope.error == true}">
     <c:out value="${requestScope.errorRoute}"/><br>

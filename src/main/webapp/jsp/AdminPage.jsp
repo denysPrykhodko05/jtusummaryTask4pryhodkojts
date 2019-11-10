@@ -1,21 +1,18 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: user1
-  Date: 27.10.2019
-  Time: 10:41
-  To change this template use File | Settings | File Templates.
---%>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page isELIgnored="false"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<fmt:setLocale value="ru" />
+<fmt:setBundle basename="locale"/>
 <html>
 <head>
     <title>Admin Page</title>
 </head>
 <body>
-<h2>Station</h2>
+<a href="/logout"><fmt:message key="index.Logout"/></a><br>
+<h2><fmt:message key="admin.station"/></h2>
 
-<a href="/logout">Logout</a>
 <form method="get" action="<c:url value="/admin/stationEdit"/>">
     <label><input type="submit" name="command" value="Edit station" ></label>
 </form>
@@ -29,7 +26,7 @@
 </form>
 <hr>
 
-<h2>Route</h2>
+<h2><fmt:message key="index.route"/></h2>
 <form method="get" action="<c:url value="/admin/stationEdit"/>">
     <label><input type="submit" name="command" value="Edit route" ></label>
 </form>

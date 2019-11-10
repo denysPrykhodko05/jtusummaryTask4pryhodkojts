@@ -1,33 +1,28 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: user1
-  Date: 27.10.2019
-  Time: 10:45
-  To change this template use File | Settings | File Templates.
---%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page isELIgnored="false" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<fmt:setLocale value="ru" />
+<fmt:setBundle basename="locale"/>
 <html>
 <head>
-    <title>Ticket</title>
+    <title><fmt:message key="userprofile.ticket"/></title>
 </head>
 <body>
-<body><a href="/">HOME</a><a href="/logout">Logout</a>
-<h2>Your ticket</h2>
-<a href="<c:url value="/"/>">HOME</a>
+<body><a href="/"><fmt:message key="login.home"/></a><br><a href="/logout"><fmt:message key="index.Logout"/></a>
+<h2><fmt:message key="ticket.yourTicket"/></h2>
 <c:if test="${requestScope.ticket!=null}">
     <c:set var="ticket" value="${requestScope.ticket}"/>
     <table border="1">
-        <caption>Ticket</caption>
+        <caption><fmt:message key="userprofile.ticket"/></caption>
         <tr>
-            <th>Train_id</th>
-            <th>Date and time depart</th>
-            <th>Carriage</th>
-            <th>Carriage number</th>
-            <th>Place</th>
-            <th>Start station</th>
-            <th>Final station</th>
+            <th>№ <fmt:message key="index.trainNumber"/></th>
+            <th><fmt:message key="ticket.dateAndTimeDepart"/></th>
+            <th><fmt:message key="ticket.carriage"/></th>
+            <th><fmt:message key="ticket.carriageNumber"/></th>
+            <th><fmt:message key="ticket.place"/></th>
+            <th><fmt:message key="ticket.startStation"/></th>
+            <th><fmt:message key="ticket.finalStation"/></th>
         </tr>
         <tr>
             <td><c:out value="${ticket.train_id}"/></td>

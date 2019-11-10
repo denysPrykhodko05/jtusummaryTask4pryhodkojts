@@ -13,11 +13,6 @@ public class AdminPageServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-    }
-
-    @Override
     public void init() throws ServletException {
         super.init();
     }

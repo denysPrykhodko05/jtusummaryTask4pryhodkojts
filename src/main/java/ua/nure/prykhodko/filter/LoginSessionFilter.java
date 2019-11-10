@@ -5,13 +5,14 @@ import ua.nure.prykhodko.entity.ROLE;
 import ua.nure.prykhodko.utils.AccessController;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static java.util.Objects.nonNull;
-
+@WebFilter(urlPatterns = {"/"})
 public class    LoginSessionFilter implements Filter {
 
     private Logger LOG = Logger.getLogger(LoginSessionFilter.class);

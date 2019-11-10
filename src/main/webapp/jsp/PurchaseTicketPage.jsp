@@ -1,24 +1,20 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: user1
-  Date: 05.11.2019
-  Time: 13:27
-  To change this template use File | Settings | File Templates.
---%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page isELIgnored="false" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<fmt:setLocale value="ru" />
+<fmt:setBundle basename="locale"/>
 <html>
 <head>
-    <title>Purchase</title>
+    <title><fmt:message key="purchase.title"/></title>
 </head>
 <body>
-<body><a href="/">HOME</a><br><a href="/logout">Logout</a><br>
+<body><a href="/"><fmt:message key="login.home"/></a><br><a href="/logout"><fmt:message key="index.Logout"/></a><br>
 <h2>${requestScope.from} - ${requestScope.to}</h2><br>
 
 
     <c:if test="${requestScope.errorFullCarriage ==true}">
-    <p style="color: red">Choose another one carriage, no empty places</p>
+    <p style="color: red"><fmt:message key="purchase.errorFullCarriage"/></p>
 </c:if>
 
 <form method="post" action="<c:url value="/purchaseTicket"/>">
@@ -38,7 +34,7 @@
         <input type="hidden" id="economy_class" name="economy_class" value="${requestScope.economy_class}">
     </c:if>
 
-    Select carriage number:
+    <fmt:message key="purchase.selectCarriage"/>:
     <c:if test="${requestScope.amount_compartment_carriages!=null}">
         <select id="select" name="compartment_carriage" data-value="${requestScope.amount_compartment_carriages}">
             <script type="text/javascript" src="../javaScript/addOptionInSelect"></script>

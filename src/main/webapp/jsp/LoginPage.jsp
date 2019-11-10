@@ -1,28 +1,25 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: user1
-  Date: 27.10.2019
-  Time: 10:49
-  To change this template use File | Settings | File Templates.
---%>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page isELIgnored="false"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="${sessionScope.lang}" />
+<fmt:setBundle basename="locale"/>
 <html>
 <head>
-    <title>Login</title>
+    <title><fmt:message key="login.label"/></title>
     <script src="../javaScript/ValidationLoginPage.js"></script>
 </head>
-<body><a href="/">HOME</a>
+<body><a href="/"><fmt:message key="login.home"/></a>
 
 <c:if test = "${requestScope.error_bool == true}">
 <p style="color:red"><c:out value = "${requestScope.error}"/><p>
     </c:if>
         <form name="LoginForm" method="post" action="<c:url value="/login"/>" onsubmit="return validateForm('LoginForm','login','password')">
-            Login<input type="text" name="login" value="${requestScope.login}"><br>
-            Password<input type="password" name="password" value="${requestScope.password}"><br>
+    <fmt:message key="login.login"/><input type="text" name="login" value="${requestScope.login}"><br>
+    <fmt:message key="login.password"/><input type="password" name="password" value="${requestScope.password}"><br>
             <input type="submit" login="Ok" value="Ok"><br>
-            <a href="/registration">Registration</a>
+            <a href="/registration"><fmt:message key="login.registration"/></a>
         </form>
 </body>
 </html>
