@@ -130,6 +130,8 @@ public class TicketDAO implements CrudDAO<BoughtTicket,Integer> {
         return false;
     }
 
+
+
     private void initPSTMbyBoughtTicket(BoughtTicket bt, PreparedStatement pstm) throws SQLException {
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+2:00"));
         int i=1;

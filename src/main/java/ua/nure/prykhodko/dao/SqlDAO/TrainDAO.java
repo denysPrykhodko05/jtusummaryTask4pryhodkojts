@@ -3,6 +3,7 @@ package ua.nure.prykhodko.dao.SqlDAO;
 import org.apache.log4j.Logger;
 import ua.nure.prykhodko.constants.Fields;
 import ua.nure.prykhodko.bean.SoldPlaces;
+import ua.nure.prykhodko.dao.entityDAO.routeDAO;
 import ua.nure.prykhodko.entity.Train;
 import ua.nure.prykhodko.exception.Messages;
 

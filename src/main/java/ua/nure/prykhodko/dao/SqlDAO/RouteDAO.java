@@ -2,6 +2,7 @@ package ua.nure.prykhodko.dao.SqlDAO;
 
 import org.apache.log4j.Logger;
 import ua.nure.prykhodko.constants.Fields;
+import ua.nure.prykhodko.dao.entityDAO.routeDAO;
 import ua.nure.prykhodko.entity.Route;
 import ua.nure.prykhodko.entity.Station;
 import ua.nure.prykhodko.entity.Train;
@@ -13,7 +14,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
 
-public class RouteDAO implements CrudDAO<Route, Integer> {
+public class RouteDAO implements CrudDAO<Route, Integer>, routeDAO {
     private static final Logger log = Logger.getLogger(RouteDAO.class);
 
     private static final String SQL_GET_ROUTE_BY_ID = "SELECT * FROM route WHERE id = (?)";

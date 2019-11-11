@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class UserDAO implements CrudDAO<User, Integer> , userDAO {
+public class UserDAO implements CrudDAO<User, Integer> , userDAO{
     private static final Logger log = Logger.getLogger(UserDAO.class);
 
     private static final String SQL_FIND_ALL_USERS = "SELECT * FROM USERS";
@@ -203,6 +203,7 @@ public class UserDAO implements CrudDAO<User, Integer> , userDAO {
      * @param id
      * @return user role
      */
+    @Override
     public ROLE getRoleByID(int id){
         Connection con = null;
         PreparedStatement preparedStatement = null;
