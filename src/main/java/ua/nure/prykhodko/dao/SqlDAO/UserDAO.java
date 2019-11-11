@@ -1,9 +1,11 @@
 package ua.nure.prykhodko.dao.SqlDAO;
 
+import org.apache.log4j.Logger;
 import ua.nure.prykhodko.constants.Fields;
 import ua.nure.prykhodko.dao.entityDAO.userDAO;
 import ua.nure.prykhodko.entity.ROLE;
 import ua.nure.prykhodko.entity.User;
+import ua.nure.prykhodko.exception.Messages;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.List;
 
 
 public class UserDAO implements CrudDAO<User, Integer> , userDAO {
+    private static final Logger log = Logger.getLogger(UserDAO.class);
 
     private static final String SQL_FIND_ALL_USERS = "SELECT * FROM USERS";
     private static final String SQL_FIND_USER_BY_LOGIN = "SELECT * FROM users WHERE login = (?)";
@@ -40,7 +43,7 @@ public class UserDAO implements CrudDAO<User, Integer> , userDAO {
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_OBTAIN_USERS);
         } finally {
             ConnectionPool.getInstance().close(con, statement, rs);
         }
@@ -93,7 +96,7 @@ public class UserDAO implements CrudDAO<User, Integer> , userDAO {
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_ADD_USER);
         }finally {
             ConnectionPool.getInstance().close(con,pstm,rs);
         }
@@ -115,7 +118,7 @@ public class UserDAO implements CrudDAO<User, Integer> , userDAO {
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_BOUGHT_TICKET);
         }finally {
             ConnectionPool.getInstance().close(con,pstm,rs);
         }
@@ -143,7 +146,7 @@ public class UserDAO implements CrudDAO<User, Integer> , userDAO {
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_OBTAIN_COUNT);
         }finally {
             ConnectionPool.getInstance().close(con,pstm,rs);
         }
@@ -188,7 +191,7 @@ public class UserDAO implements CrudDAO<User, Integer> , userDAO {
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_FOUND_USER);
         }finally {
             ConnectionPool.getInstance().close(con,preparedStatement,rs);
         }
@@ -214,7 +217,7 @@ public class UserDAO implements CrudDAO<User, Integer> , userDAO {
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_FOUND_ROLE);
         }finally {
             ConnectionPool.getInstance().close(con,preparedStatement,rs);
         }
@@ -235,7 +238,7 @@ public class UserDAO implements CrudDAO<User, Integer> , userDAO {
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_UPDATE_COUNT);
         }finally {
             ConnectionPool.getInstance().close(con,pstm,rs);
         }

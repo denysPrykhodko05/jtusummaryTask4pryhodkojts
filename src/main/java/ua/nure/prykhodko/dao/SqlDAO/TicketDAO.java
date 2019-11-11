@@ -1,8 +1,12 @@
 package ua.nure.prykhodko.dao.SqlDAO;
 
+import org.apache.log4j.Logger;
 import ua.nure.prykhodko.constants.Fields;
 import ua.nure.prykhodko.bean.BoughtTicket;
+import ua.nure.prykhodko.entity.Station;
+import ua.nure.prykhodko.exception.Messages;
 
+import java.lang.reflect.Member;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,6 +16,8 @@ import java.util.List;
 import java.util.TimeZone;
 
 public class TicketDAO implements CrudDAO<BoughtTicket,Integer> {
+    private static final Logger log = Logger.getLogger(TicketDAO.class);
+
     private static final String SQL_BUY_TICKET_USER_INIT = "UPDATE users SET ticket_id=(?) WHERE login=(?)";
     private static final String SQL_BUY_TICKET_TRAIN_INIT = "insert into sold_tickets(train_id, date, carriage, carriage_number, place, start_station, final_station) values (?,?,?,?,?,?,?)";
     private static final String SQL_GET_TICKET_ID = "SELECT id FROM sold_tickets WHERE train_id=(?) and date=(?) and carriage=(?) and carriage_number=(?) and place=(?) and start_station=(?) and final_station=(?)";
@@ -58,7 +64,7 @@ public class TicketDAO implements CrudDAO<BoughtTicket,Integer> {
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_OBTAIN_TICKET);
         }finally {
             ConnectionPool.getInstance().close(con,pstm,rs);
         }
@@ -77,7 +83,7 @@ public class TicketDAO implements CrudDAO<BoughtTicket,Integer> {
             pstm.executeUpdate();
         } catch (SQLException e) {
             ConnectionPool.getInstance().close(con,pstm,rs);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_BOUGHT_TICKET);
         }finally {
             ConnectionPool.getInstance().close(con,pstm,rs);
         }
@@ -99,7 +105,7 @@ public class TicketDAO implements CrudDAO<BoughtTicket,Integer> {
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_OBTAIN_TICKET);
         }finally {
             ConnectionPool.getInstance().close(con, pstm,rs);
         }
@@ -119,7 +125,7 @@ public class TicketDAO implements CrudDAO<BoughtTicket,Integer> {
                 return true;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_BOUGHT_TICKET);
         }
         return false;
     }

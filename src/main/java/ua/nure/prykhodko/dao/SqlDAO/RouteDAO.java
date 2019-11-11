@@ -1,9 +1,11 @@
 package ua.nure.prykhodko.dao.SqlDAO;
 
+import org.apache.log4j.Logger;
 import ua.nure.prykhodko.constants.Fields;
 import ua.nure.prykhodko.entity.Route;
 import ua.nure.prykhodko.entity.Station;
 import ua.nure.prykhodko.entity.Train;
+import ua.nure.prykhodko.exception.Messages;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 public class RouteDAO implements CrudDAO<Route, Integer> {
+    private static final Logger log = Logger.getLogger(RouteDAO.class);
 
     private static final String SQL_GET_ROUTE_BY_ID = "SELECT * FROM route WHERE id = (?)";
     private static final String SQL_GET_ROUTE_ID_BY_STATION_ID = "SELECT route_id FROM STATION_ROUTE\n" +
@@ -98,7 +101,7 @@ public class RouteDAO implements CrudDAO<Route, Integer> {
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_OBTAIN_TRAIN);
         } finally {
             ConnectionPool.getInstance().close(con, pstm, rs);
         }
@@ -117,7 +120,7 @@ public class RouteDAO implements CrudDAO<Route, Integer> {
             return pstm.executeUpdate() == 1;
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_UPDATE_TRAIN);
         } finally {
             ConnectionPool.getInstance().close(con, pstm, rs);
         }
@@ -150,7 +153,7 @@ public class RouteDAO implements CrudDAO<Route, Integer> {
             return trainList;
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.TRACE_ROUTE_FOUND_ALL_AVAILABLE_TRAINS);
         } finally {
             ConnectionPool.getInstance().close(con, pstm, rs);
         }
@@ -182,7 +185,7 @@ public class RouteDAO implements CrudDAO<Route, Integer> {
             return list;
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_FOUND_ROUTE_BY_STATION);
         } finally {
             ConnectionPool.getInstance().close(con, pstm, rs);
         }
@@ -205,6 +208,7 @@ public class RouteDAO implements CrudDAO<Route, Integer> {
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
+            log.error(Messages.ERR_CANNOT_FOUND_ROUT);
         } finally {
             ConnectionPool.getInstance().close(con, pstm, rs);
         }
@@ -227,7 +231,7 @@ public class RouteDAO implements CrudDAO<Route, Integer> {
             pstm.executeUpdate();
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_ADD_STATION_TO_ROUTE);
         } finally {
             ConnectionPool.getInstance().close(con, pstm, rs);
         }
@@ -248,7 +252,7 @@ public class RouteDAO implements CrudDAO<Route, Integer> {
             return pstm.executeUpdate() == 1;
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_ADD_STATION_TO_ROUTE);
         } finally {
             ConnectionPool.getInstance().close(con, pstm, rs);
         }
@@ -286,7 +290,7 @@ public class RouteDAO implements CrudDAO<Route, Integer> {
             pstm.setTimestamp(4, station.getDepart_time(), cal);
             return pstm.executeUpdate() == 1;
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_ADD_STATION);
         }
 
         return false;
@@ -332,7 +336,7 @@ public class RouteDAO implements CrudDAO<Route, Integer> {
             rs = pstm.executeQuery();
             return rs.next() ? rs.getInt(rsString) : 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_FOUND_STATION_IN_ROUTE);
         }
         return 0;
     }
@@ -352,7 +356,7 @@ public class RouteDAO implements CrudDAO<Route, Integer> {
             return pstm.executeUpdate() == 1;
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_UPDATE_STATION);
         } finally {
             ConnectionPool.getInstance().close(con, pstm, rs);
         }
@@ -376,7 +380,7 @@ public class RouteDAO implements CrudDAO<Route, Integer> {
             return pstm.executeUpdate() == 1;
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_DELETE_STATION);
         } finally {
             ConnectionPool.getInstance().close(con, pstm, rs);
         }
@@ -396,7 +400,7 @@ public class RouteDAO implements CrudDAO<Route, Integer> {
             return pstm.executeUpdate()==1;
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_DELETE_ROUTE);
         }finally {
             ConnectionPool.getInstance().close(con,pstm,rs);
         }
@@ -417,7 +421,7 @@ public class RouteDAO implements CrudDAO<Route, Integer> {
             pstm.executeUpdate();
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.trace(Messages.ERR_CANNOT_UPDATE_TIME);
         } finally {
             ConnectionPool.getInstance().close(con, pstm, rs);
         }

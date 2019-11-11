@@ -1,8 +1,10 @@
 package ua.nure.prykhodko.dao.SqlDAO;
 
+import org.apache.log4j.Logger;
 import ua.nure.prykhodko.constants.Fields;
 import ua.nure.prykhodko.bean.SoldPlaces;
 import ua.nure.prykhodko.entity.Train;
+import ua.nure.prykhodko.exception.Messages;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 public class TrainDAO implements CrudDAO<Train, Integer> {
+    private static final Logger log = Logger.getLogger(TrainDAO.class);
 
     private static final String SQL_GET_TRAIN_BY_ID = "SELECT * FROM train WHERE id=(?)";
     private static final String SQL_GET_PLACES_BY_TRAIN="SELECT * FROM sold_tickets WHERE train_id=(?) and date=(?) and start_station=(?) and final_station=(?)"; @Override
@@ -44,7 +47,7 @@ public class TrainDAO implements CrudDAO<Train, Integer> {
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_OBTAIN_TRAIN);
         }finally {
             ConnectionPool.getInstance().close(con,pstm,rs);
         }
@@ -90,7 +93,7 @@ public class TrainDAO implements CrudDAO<Train, Integer> {
             return soldPlacesList;
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.error(Messages.ERR_CANNOT_OBTAIN_EMPTY_PLACES);
         }finally {
             ConnectionPool.getInstance().close(con,pstm,rs);
         }
