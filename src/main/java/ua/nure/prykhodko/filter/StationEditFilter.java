@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class ControllerStationEdit implements Filter {
+public class StationEditFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
@@ -42,9 +42,6 @@ public class ControllerStationEdit implements Filter {
 
                 case "Delete route":
                     req.getRequestDispatcher("/jsp/DeleteRoutePage.jsp").forward(req,resp);
-                    break;
-
-                default:
                     break;
             }
         }

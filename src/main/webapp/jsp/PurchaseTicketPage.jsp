@@ -30,8 +30,8 @@
     <c:if test="${requestScope.common!=null}">
         <input type="hidden" id="common" name="common" value="${requestScope.common}">
     </c:if>
-    <c:if test="${requestScope.economy_class!=null}">
-        <input type="hidden" id="economy_class" name="economy_class" value="${requestScope.economy_class}">
+    <c:if test="${requestScope.economyClass!=null}">
+        <input type="hidden" id="economyClass" name="economyClass" value="${requestScope.economyClass}">
     </c:if>
 
     <fmt:message key="purchase.selectCarriage"/>:

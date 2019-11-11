@@ -1,10 +1,12 @@
 package ua.nure.prykhodko.servlet;
 
+import org.apache.log4j.Logger;
 import ua.nure.prykhodko.entity.Route;
 import ua.nure.prykhodko.dao.SqlDAO.RouteDAO;
 import ua.nure.prykhodko.dao.SqlDAO.StationDAO;
 import ua.nure.prykhodko.entity.Station;
 import ua.nure.prykhodko.entity.Train;
+import ua.nure.prykhodko.exception.Messages;
 import ua.nure.prykhodko.utils.TimeUtils;
 import ua.nure.prykhodko.utils.Validation;
 
@@ -20,6 +22,13 @@ import java.util.List;
 
 @WebServlet("/admin/routeEdit")
 public class RouteEditServlet extends HttpServlet {
+    private static final Logger log = Logger.getLogger(RouteEditServlet.class);
+
+
+    @Override
+    public void init() throws ServletException {
+        log.info(Messages.INFO_ENTER);
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -29,7 +38,7 @@ public class RouteEditServlet extends HttpServlet {
         RouteDAO routeDAO = (RouteDAO) servletContext.getAttribute("routeDAO");
 
 
-        if (!routeDAO.isExistRoute(Integer.parseInt(route_number))) {
+        if (route_number == null || route_number.equals("") || !routeDAO.isExistRoute(Integer.parseInt(route_number))) {
             req.setAttribute("errorFindRoute", true);
             req.setAttribute("route_number", route_number);
             req.getRequestDispatcher("/jsp/EditRoutePage.jsp").forward(req, resp);
@@ -37,37 +46,27 @@ public class RouteEditServlet extends HttpServlet {
             if (choice == null) {
                 req.setAttribute("errorNothingChosen", true);
                 req.getRequestDispatcher("/jsp/EditRoutePage.jsp").forward(req, resp);
-            }
-            switch (choice) {
-                case "startStation":
-                    if (!route_number.equals("")) {
+            } else {
+                switch (choice) {
+                    case "startStation":
                         req.setAttribute("input", true);
                         req.setAttribute("startStation", true);
                         req.setAttribute("route_number", route_number);
                         req.getRequestDispatcher("/jsp/EditRoutePage.jsp").forward(req, resp);
-                    } else {
-                        req.setAttribute("errorIncorrectRouteInput", true);
-                        req.getRequestDispatcher("/jsp/EditRoutePage.jsp").forward(req, resp);
-                    }
-                    break;
+                        break;
 
-                case "finalStation":
-                    if (!route_number.equals("")) {
+                    case "finalStation":
                         req.setAttribute("input", true);
                         req.setAttribute("finalStation", true);
                         req.setAttribute("route_number", route_number);
                         req.getRequestDispatcher("/jsp/EditRoutePage.jsp").forward(req, resp);
-                    } else {
-                        req.setAttribute("errorIncorrectRouteInput", true);
-                        req.getRequestDispatcher("/jsp/EditRoutePage.jsp").forward(req, resp);
-                    }
-                    break;
+                        break;
 
-                case "train":
-                    if (route_number != null && !route_number.equals("")) {
+                    case "train":
                         Route route = routeDAO.getEntityById(Integer.parseInt(route_number));
                         if (route != null) {
                             List<Train> availableTrain = routeDAO.getAvailableTrain();
+                            log.trace(Messages.TRACE_ROUTE_FOUND_ALL_AVAILABLE_TRAINS+availableTrain);
                             req.setAttribute("trainList", availableTrain);
                             req.setAttribute("input", true);
                             req.setAttribute("train", true);
@@ -78,40 +77,23 @@ public class RouteEditServlet extends HttpServlet {
                             req.setAttribute("route_number", route_number);
                             req.getRequestDispatcher("/jsp/EditRoutePage.jsp").forward(req, resp);
                         }
-                    } else {
-                        req.setAttribute("errorIncorrectRouteInput", true);
-                        req.getRequestDispatcher("/jsp/EditRoutePage.jsp").forward(req, resp);
-                    }
-                    break;
+                        break;
 
-                case "deleteStation":
-                    if (route_number != null && !route_number.equals("")) {
+                    case "deleteStation":
                         req.setAttribute("input", true);
                         req.setAttribute("deleteStation", true);
                         req.setAttribute("route_number", route_number);
                         req.getRequestDispatcher("/jsp/EditRoutePage.jsp").forward(req, resp);
-                    } else {
-                        req.setAttribute("errorIncorrectRouteInput", true);
-                        req.getRequestDispatcher("/jsp/EditRoutePage.jsp").forward(req, resp);
-                    }
-                    break;
+                        break;
 
-                case "addStation":
-                    if (route_number != null && !route_number.equals("")) {
+                    case "addStation":
                         req.setAttribute("input", true);
                         req.setAttribute("addStation", true);
                         req.setAttribute("route_number", route_number);
                         req.getRequestDispatcher("/jsp/EditRoutePage.jsp").forward(req, resp);
-                    } else {
-                        req.setAttribute("errorIncorrectRouteInput", true);
-                        req.getRequestDispatcher("/jsp/EditRoutePage.jsp").forward(req, resp);
-                    }
-                    break;
+                        break;
 
-                default:
-                    req.setAttribute("errorNothingChosen", true);
-                    req.getRequestDispatcher("/jsp/EditRoutePage.jsp").forward(req, resp);
-                    break;
+                }
             }
         }
     }
@@ -146,10 +128,13 @@ public class RouteEditServlet extends HttpServlet {
         } else {
             if (startStationName != null && !startStationName.equals("") && Validation.isCorrectStationName(startStationName) && departTime != null) {
                 Station station = stationDAO.getStationByName(startStationName);
+                log.trace(Messages.TRACE_STATION_FOUND + station);
                 int route = Integer.parseInt(route_id);
                 if (station != null) {
                     int startStationOld = routeDAO.getStartStationInRoute(route);
+                    log.trace(Messages.TRACE_STATION_CREATE_ON_ROUTE+station);
                     routeDAO.deleteStationFromRoute(startStationOld, route);
+                    log.trace(Messages.TRACE_DELETE_ROUTE_FROM_STATION_ROUTE+station);
                     routeDAO.updateStartStationInRoute(route, station.getId(), departTime);
                     station.setRoute_id(route);
                     station.setDepart_time(departTime);
@@ -163,6 +148,7 @@ public class RouteEditServlet extends HttpServlet {
                     stationDAO.addEntity(station);
                     int startStationOld = routeDAO.getStartStationInRoute(route);
                     routeDAO.deleteStationFromRoute(startStationOld, route);
+                    log.trace(Messages.TRACE_DELETE_ROUTE_FROM_STATION_ROUTE+station);
                     routeDAO.updateStartStationInRoute(station.getRoute_id(), station.getId(), departTime);
                     routeDAO.addStartStationInStationRoute(station);
                     resp.sendRedirect("/admin");
@@ -206,6 +192,7 @@ public class RouteEditServlet extends HttpServlet {
                 }
                 if (station_name != null && Validation.isCorrectStationName(station_name)) {
                     station_id = stationDAO.getEntityID(station_name);
+                    log.trace(Messages.TRACE_STATION_FOUND+station_id);
                     station.setName(station_name);
                 } else {
                     req.setAttribute("errorAddStationName", true);
@@ -218,6 +205,7 @@ public class RouteEditServlet extends HttpServlet {
                 if (station_id == 0) {
                     stationDAO.addEntity(station);
                     station_id = stationDAO.getEntityID(station_name);
+                    log.trace(Messages.TRACE_STATION_FOUND+station_id);
                     station.setId(station_id);
                     station.setRoute_id(Integer.parseInt(route_id));
                     station.setArrive_time(timestampArrive);
@@ -249,7 +237,12 @@ public class RouteEditServlet extends HttpServlet {
         station.setArrive_time(arriveTime);
         stationDAO.addEntity(station);
         int stationNewId = stationDAO.getEntityID(station.getName());
+        log.trace(Messages.TRACE_STATION_FOUND+stationNewId);
         station.setId(stationNewId);
+    }
+    @Override
+    public void destroy() {
+        log.info(Messages.INFO_EXIT);
     }
 
 }

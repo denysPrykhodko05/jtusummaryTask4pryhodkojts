@@ -1,8 +1,10 @@
 package ua.nure.prykhodko.servlet;
 
+import org.apache.log4j.Logger;
 import ua.nure.prykhodko.dao.SqlDAO.RouteDAO;
 import ua.nure.prykhodko.dao.SqlDAO.StationDAO;
 import ua.nure.prykhodko.entity.Station;
+import ua.nure.prykhodko.exception.Messages;
 import ua.nure.prykhodko.utils.TimeUtils;
 import ua.nure.prykhodko.utils.Validation;
 
@@ -17,6 +19,12 @@ import java.sql.Timestamp;
 
 @WebServlet("/admin/stationEdit/add")
 public class AddStationServlet extends HttpServlet {
+    private static final Logger log = Logger.getLogger(AddStationServlet.class);
+
+    @Override
+    public void init() throws ServletException {
+        log.info(Messages.INFO_ENTER);
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -46,7 +54,7 @@ public class AddStationServlet extends HttpServlet {
             station.setArrive_time(arrive_date);
         }
 
-        if (!route.equals("") && Integer.parseInt(route)!=0) {
+        if (!route.equals("") && Integer.parseInt(route) != 0) {
             route_id = Integer.parseInt(route);
         } else {
             req.setAttribute("errorRoute", true);
@@ -55,11 +63,13 @@ public class AddStationServlet extends HttpServlet {
             req.getRequestDispatcher("/jsp/AddStationPage.jsp").forward(req, resp);
             flagRoute = false;
         }
-        if(routeDAO.isExistRoute(route_id)) {
-            if (arrive_date != null && depart_date != null && arrive_date.getTime() - depart_date.getTime() < 0) {
-                if (!name.equals("") && Validation.isCorrectStationName(name)) {
+        if (routeDAO.isExistRoute(route_id)) {
+
+            if (arrive_date != null && depart_date != null && arrive_date.getTime() > depart_date.getTime()) {
+                if (name != null && Validation.isCorrectStationName(name)) {
                     station.setName(name);
                     stationDAO.addEntity(station);
+                    log.trace(Messages.TRACE_STATION_CREATE + station);
                     id = stationDAO.getEntityID(station.getName());
                 } else {
                     req.setAttribute("station_name", name);
@@ -78,6 +88,7 @@ public class AddStationServlet extends HttpServlet {
                 station.setRoute_id(route_id);
                 station.setId(id);
                 routeDAO.addStationToRoute(station);
+                log.trace(Messages.TRACE_STATION_CREATE_ON_ROUTE + station);
                 req.setAttribute("success", true);
                 req.getRequestDispatcher("/jsp/AddStationPage.jsp").forward(req, resp);
             } else {
@@ -86,11 +97,17 @@ public class AddStationServlet extends HttpServlet {
                 req.setAttribute("route_id", route_id);
                 req.getRequestDispatcher("/jsp/AddStationPage.jsp").forward(req, resp);
             }
-        }else{
+        } else {
             req.setAttribute("route_id", route_id);
             req.setAttribute("station_name", name);
-            req.setAttribute("errorRoute",true);
-            req.getRequestDispatcher("/jsp/AddStationPage.jsp").forward(req,resp);
+            req.setAttribute("errorRoute", true);
+            req.getRequestDispatcher("/jsp/AddStationPage.jsp").forward(req, resp);
         }
     }
+
+    @Override
+    public void destroy() {
+        log.info(Messages.INFO_EXIT);
+    }
+
 }

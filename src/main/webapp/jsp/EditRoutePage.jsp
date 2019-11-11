@@ -43,7 +43,7 @@
         <c:forEach var="train" items="${requestScope.trainList}">
             <form method="post">
                 <fmt:message key="index.trainNumber"/> №<c:out value="${train.id}"/><br>
-                 <fmt:message key="editRoute.amountOfEconomyClass"/> : <c:out value="${train.economy_class}"/><br>
+                 <fmt:message key="editRoute.amountOfEconomyClass"/> : <c:out value="${train.economyClass}"/><br>
                 <fmt:message key="editRoute.amountOfCommon"/>: <c:out value="${train.common}"/><br>
                 <fmt:message key="editRoute.amountOfCompartment"/> : <c:out value="${train.compartment}"/><br>
                 <input hidden name="id" value="${train.id}">

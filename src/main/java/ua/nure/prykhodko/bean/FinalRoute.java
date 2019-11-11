@@ -2,9 +2,6 @@ package ua.nure.prykhodko.bean;
 
 import ua.nure.prykhodko.entity.Station;
 
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.List;
 import java.util.TreeSet;
 
 public class FinalRoute {
@@ -15,7 +12,7 @@ public class FinalRoute {
     private String arrive_time;
     private String depart_time;
     private String timeInRoad;
-    private int economy_class;
+    private int economyClass;
     private int compartment;
     private int common;
     private double priceForCommon;
@@ -111,12 +108,12 @@ public class FinalRoute {
         this.depart_time = depart_time;
     }
 
-    public int getEconomy_class() {
-        return economy_class;
+    public int getEconomyClass() {
+        return economyClass;
     }
 
-    public void setEconomy_class(int economy_class) {
-        this.economy_class = economy_class;
+    public void setEconomyClass(int economyClass) {
+        this.economyClass = economyClass;
     }
 
     public int getCompartment() {

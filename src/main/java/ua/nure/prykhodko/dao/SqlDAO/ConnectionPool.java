@@ -11,7 +11,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 public class ConnectionPool {
-    private static final Logger LOG = Logger.getLogger(ConnectionPool.class);
+        private static final Logger LOG = Logger.getLogger(ConnectionPool.class);
     private Connection connection = null;
     private Statement statement=null;
 

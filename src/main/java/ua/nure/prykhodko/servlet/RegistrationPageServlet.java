@@ -1,8 +1,10 @@
 package ua.nure.prykhodko.servlet;
 
+import org.apache.log4j.Logger;
 import ua.nure.prykhodko.dao.SqlDAO.UserDAO;
 import ua.nure.prykhodko.entity.ROLE;
 import ua.nure.prykhodko.entity.User;
+import ua.nure.prykhodko.exception.Messages;
 import ua.nure.prykhodko.utils.Validation;
 
 import javax.servlet.ServletException;
@@ -13,6 +15,13 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class RegistrationPageServlet extends HttpServlet {
+    private static final Logger log = Logger.getLogger(RegistrationPageServlet.class);
+
+    @Override
+    public void init() throws ServletException {
+        userDAO = new UserDAO();
+        log.info(Messages.INFO_ENTER);
+    }
     UserDAO userDAO;
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -58,12 +67,18 @@ public class RegistrationPageServlet extends HttpServlet {
             if (userDAO.addEntity(user)){
                 session = req.getSession();
                 session.setAttribute("login", login);
+                log.trace(Messages.TRACE_SESSION_LOGIN+login);
                 session.setAttribute("password", password);
+                log.trace(Messages.TRACE_SESSION_PASSWORD+password);
                 ROLE role = userDAO.getRoleByID(user.getRoleId());
                 session.setAttribute("role", role);
+                log.trace(Messages.TRACE_SESSION_ROLE+role);
                 session.setAttribute("email",email);
+                log.trace(Messages.TRACE_SESSION_EMAIL+email);
                 session.setAttribute("loginBool", true);
+                log.trace(Messages.TRACE_SESSION_LOGINBOOL+true);
                 session.setAttribute("count",0);
+                log.trace(Messages.TRACE_SESSION_COUNT+0);
                 resp.sendRedirect("/login");
             }else{
                 req.setAttribute("error_bool", true);
@@ -74,9 +89,8 @@ public class RegistrationPageServlet extends HttpServlet {
         }
 
     }
-
     @Override
-    public void init() throws ServletException {
-        userDAO = new UserDAO();
+    public void destroy() {
+        log.info(Messages.INFO_EXIT);
     }
 }

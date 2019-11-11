@@ -1,7 +1,9 @@
 package ua.nure.prykhodko.servlet;
 
+import org.apache.log4j.Logger;
 import ua.nure.prykhodko.dao.SqlDAO.UserDAO;
 import ua.nure.prykhodko.entity.User;
+import ua.nure.prykhodko.exception.Messages;
 import ua.nure.prykhodko.utils.Validation;
 
 import javax.servlet.ServletContext;
@@ -15,6 +17,12 @@ import java.io.IOException;
 
 @WebServlet("/profile")
 public class ProfileServlet extends HttpServlet {
+    private static final Logger log = Logger.getLogger(ProfileServlet.class);
+    @Override
+    public void init() throws ServletException {
+        log.info(Messages.INFO_ENTER);
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ServletContext servletContext = req.getServletContext();
@@ -24,7 +32,9 @@ public class ProfileServlet extends HttpServlet {
         UserDAO userDAO = (UserDAO) servletContext.getAttribute("userDAO");
         login = (String)session.getAttribute("login");
         count = userDAO.getCountByLogin(login);
+        log.trace(Messages.TRACE_USER_COUNT+count);
         session.setAttribute("count",count);
+        log.trace(Messages.TRACE_SESSION_COUNT + count);
         req.getRequestDispatcher("/jsp/UserProfile.jsp").forward(req, resp);
     }
 
@@ -35,6 +45,7 @@ public class ProfileServlet extends HttpServlet {
         HttpSession session = req.getSession();
         String login = (String) session.getAttribute("login");
         double countOld = userDAO.getCountByLogin(login);
+        log.trace(Messages.TRACE_USER_COUNT + countOld);
         double countNew = 0;
 
         if (req.getAttribute("success") == null) {
@@ -54,6 +65,7 @@ public class ProfileServlet extends HttpServlet {
             countNew += countOld;
             if (userDAO.updateCountByLogin(countNew, login)) {
                 session.setAttribute("count", countNew);
+                log.trace(Messages.TRACE_SESSION_COUNT+countNew);
                resp.sendRedirect("/profile");
             } else {
                 doGet(req, resp);
@@ -63,4 +75,10 @@ public class ProfileServlet extends HttpServlet {
             req.getRequestDispatcher("/jsp/UserProfile.jsp").forward(req, resp);
         }
     }
+
+    @Override
+    public void destroy() {
+        log.info(Messages.INFO_EXIT);
+    }
+
 }

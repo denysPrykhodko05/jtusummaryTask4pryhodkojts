@@ -2,6 +2,7 @@ package ua.nure.prykhodko.listener;
 
 import ua.nure.prykhodko.dao.SqlDAO.*;
 import ua.nure.prykhodko.entity.User;
+import ua.nure.prykhodko.utils.Log4jInit;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;

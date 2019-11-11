@@ -15,7 +15,8 @@
 <c:if test = "${requestScope.error_bool == true}">
 <p style="color:red"><c:out value = "${requestScope.error}"/><p>
     </c:if>
-        <form name="LoginForm" method="post" action="<c:url value="/login"/>" onsubmit="return validateForm('LoginForm','login','password')">
+        <form name="LoginForm" method="post" action="<c:url value="/login"/>" onsubmit="return validateForm('LoginForm','login','password')" class="ui-form">
+    <h3>Войти на сайт</h3>
     <fmt:message key="login.login"/><input type="text" name="login" value="${requestScope.login}"><br>
     <fmt:message key="login.password"/><input type="password" name="password" value="${requestScope.password}"><br>
             <input type="submit" login="Ok" value="Ok"><br>

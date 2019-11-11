@@ -142,7 +142,7 @@ public class RouteDAO implements CrudDAO<Route, Integer> {
             while (rs.next()) {
                 train = new Train();
                 train.setId(rs.getInt(Fields.ENTITY_ID));
-                train.setEconomy_class(rs.getInt(Fields.TRAIN_AMOUNT_OF_ECONOMY_CLASS));
+                train.setEconomyClass(rs.getInt(Fields.TRAIN_AMOUNT_OF_ECONOMY_CLASS));
                 train.setCompartment(rs.getInt(Fields.TRAIN_AMOUNT_OF_COMPARTMENT));
                 train.setCommon(rs.getInt(Fields.TRAIN_AMOUNT_OF_COMMON));
                 trainList.add(train);

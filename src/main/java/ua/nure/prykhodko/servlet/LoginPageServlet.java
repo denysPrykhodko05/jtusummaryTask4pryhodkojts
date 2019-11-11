@@ -1,8 +1,10 @@
 package ua.nure.prykhodko.servlet;
 
+import org.apache.log4j.Logger;
 import ua.nure.prykhodko.dao.SqlDAO.UserDAO;
 import ua.nure.prykhodko.entity.ROLE;
 import ua.nure.prykhodko.entity.User;
+import ua.nure.prykhodko.exception.Messages;
 import ua.nure.prykhodko.utils.AccessController;
 import ua.nure.prykhodko.utils.Validation;
 
@@ -18,6 +20,13 @@ import java.util.List;
 
 @WebServlet("/login")
 public class LoginPageServlet extends HttpServlet {
+    private static final Logger log = Logger.getLogger(LoginPageServlet.class);
+
+
+    @Override
+    public void init() throws ServletException {
+        log.info(Messages.INFO_ENTER);
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -41,6 +50,7 @@ public class LoginPageServlet extends HttpServlet {
         User user = null;
         if (Validation.isCorrectLogin(login)) {
             user = userDAO.findUserByLogin(login);
+            log.trace(Messages.TRACE_FOUND_USER + user);
         }
 
         if (user == null) {
@@ -49,14 +59,19 @@ public class LoginPageServlet extends HttpServlet {
             req.getRequestDispatcher("/jsp/LoginPage.jsp").forward(req,resp);
         }else if (Validation.isCorrectPassword(password) && user.getPassword().equals(password)){
             ROLE role = userDAO.getRoleByID(user.getRoleId());
-
-
+            log.trace(Messages.TRACE_FOUND_USER_ROLE+ role);
             session.setAttribute("login", login);
+            log.trace(Messages.TRACE_SESSION_LOGIN + login);
             session.setAttribute("password", password);
+            log.trace(Messages.TRACE_SESSION_PASSWORD+ password);
             session.setAttribute("role",role);
+            log.trace(Messages.TRACE_SESSION_ROLE + role);
             session.setAttribute("loginBool", true);
+            log.trace(Messages.TRACE_SESSION_LOGINBOOL + true);
             session.setAttribute("email", user.getEmail());
+            log.trace(Messages.TRACE_SESSION_EMAIL + user.getEmail());
             session.setAttribute("count", user.getCount());
+            log.trace(Messages.TRACE_SESSION_COUNT + user.getCount());
 
             AccessController.moveToMenu(req,resp,role);
             }else{
@@ -65,8 +80,8 @@ public class LoginPageServlet extends HttpServlet {
             req.getRequestDispatcher("/jsp/LoginPage.jsp").forward(req,resp);
         }
     }
-
     @Override
-    public void init() throws ServletException {
+    public void destroy() {
+        log.info(Messages.INFO_EXIT);
     }
 }

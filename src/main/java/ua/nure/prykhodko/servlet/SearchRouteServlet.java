@@ -1,5 +1,6 @@
 package ua.nure.prykhodko.servlet;
 
+import org.apache.log4j.Logger;
 import ua.nure.prykhodko.dao.SqlDAO.RouteDAO;
 import ua.nure.prykhodko.dao.SqlDAO.StationDAO;
 import ua.nure.prykhodko.dao.SqlDAO.TrainDAO;
@@ -7,6 +8,7 @@ import ua.nure.prykhodko.bean.FinalRoute;
 import ua.nure.prykhodko.entity.Route;
 import ua.nure.prykhodko.entity.Station;
 import ua.nure.prykhodko.entity.Train;
+import ua.nure.prykhodko.exception.Messages;
 import ua.nure.prykhodko.utils.TimeUtils;
 
 import javax.servlet.ServletContext;
@@ -21,9 +23,12 @@ import java.util.*;
 
 @WebServlet("/search")
 public class SearchRouteServlet extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private static final Logger log = Logger.getLogger(SearchRouteServlet.class);
 
+
+    @Override
+    public void init() throws ServletException {
+        log.trace(Messages.INFO_ENTER);
     }
 
     @Override
@@ -58,12 +63,15 @@ public class SearchRouteServlet extends HttpServlet {
 
         if (stationFrom != null && stationTo != null) {
             routesId = routeDAO.getRouteByStationId(stationFrom.getId(), stationTo.getId());
+            log.trace(Messages.TRACE_STATION_FOUND + routesId);
             StringBuilder sb = new StringBuilder();
             sb.append(date).append(" ").append(time).append(":00").append(".0");
             timeMin = Timestamp.valueOf(sb.toString());
             for (int id : routesId) {
                 stationDAO.getTimeForStation(stationFrom, id);
+                log.trace(Messages.TRACE_STATION_TIME+stationFrom);
                 stationDAO.getTimeForStation(stationTo, id);
+                log.trace(Messages.TRACE_STATION_TIME+stationTo);
                 if (stationFrom.getDepart_time() != null &&
                         stationTo.getArrive_time() != null &&
                         TimeUtils.compareDayOfWeek(Timestamp.valueOf(sb.toString()), stationFrom.getDepart_time()) &&
@@ -73,6 +81,7 @@ public class SearchRouteServlet extends HttpServlet {
 
                     Route route = routeDAO.getEntityById(id);
                     train = trainDAO.getEntityById(route.getTrainId());
+                    log.trace(Messages.TRACE_FOUND_TRAIN+train);
 
                     timeInRoad = TimeUtils.countTimeInRoad(stationTo, stationFrom);
                     timeFrom = sb.append(date).append(" ").append(TimeUtils.parseDate(stationFrom.getDepart_time())).toString();
@@ -81,9 +90,9 @@ public class SearchRouteServlet extends HttpServlet {
                     timeTo = sb.append(date).append(" ").append(TimeUtils.parseDate(stationTo.getArrive_time())).toString();
 
 
-                    priceForCommon = TimeUtils.parseTime(timeInRoad)*30;
-                    priceForCompartment = TimeUtils.parseTime(timeInRoad)*60;
-                    priceForEconomy = TimeUtils.parseTime(timeInRoad)*45;
+                    priceForCommon = TimeUtils.parseTime(timeInRoad) * 30;
+                    priceForCompartment = TimeUtils.parseTime(timeInRoad) * 60;
+                    priceForEconomy = TimeUtils.parseTime(timeInRoad) * 45;
 
                     finalRoute = new FinalRoute();
 
@@ -96,7 +105,7 @@ public class SearchRouteServlet extends HttpServlet {
                     finalRoute.setArrive_time(timeTo);
                     finalRoute.setTimeInRoad(timeInRoad);
                     finalRoute.setCompartment(train.getCompartment());
-                    finalRoute.setEconomy_class(train.getEconomy_class());
+                    finalRoute.setEconomyClass(train.getEconomyClass());
                     finalRoute.setCommon(train.getCommon());
                     finalRoute.setPriceForCommon(priceForCommon);
                     finalRoute.setPriceForCompartment(priceForCompartment);
@@ -107,7 +116,10 @@ public class SearchRouteServlet extends HttpServlet {
                     req.setAttribute("routes", finalRouteList);
                 }
                 stationFrom = stationDAO.getStationByName(from);
+                log.trace(Messages.TRACE_STATION_FOUND+stationFrom);
                 stationTo = stationDAO.getStationByName(to);
+                log.trace(Messages.TRACE_STATION_FOUND+to);
+
             }
         }
         req.setAttribute("from", from);
@@ -116,7 +128,7 @@ public class SearchRouteServlet extends HttpServlet {
     }
 
     @Override
-    public void init() throws ServletException {
-
+    public void destroy() {
+        log.info(Messages.INFO_EXIT);
     }
 }

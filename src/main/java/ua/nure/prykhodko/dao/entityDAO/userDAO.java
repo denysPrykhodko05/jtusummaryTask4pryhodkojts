@@ -10,7 +10,7 @@ public interface userDAO {
      * parsing user from resultSet
      * @return object of User
      */
-    User parseUser(ResultSet resultSet) throws SQLException;
+    User buildUser(ResultSet resultSet) throws SQLException;
 
     /**
      * find user by login in database

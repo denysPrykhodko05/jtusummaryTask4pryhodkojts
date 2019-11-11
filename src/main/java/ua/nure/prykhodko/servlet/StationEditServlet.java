@@ -1,8 +1,10 @@
 package ua.nure.prykhodko.servlet;
 
+import org.apache.log4j.Logger;
 import ua.nure.prykhodko.dao.SqlDAO.RouteDAO;
 import ua.nure.prykhodko.dao.SqlDAO.StationDAO;
 import ua.nure.prykhodko.entity.Station;
+import ua.nure.prykhodko.exception.Messages;
 import ua.nure.prykhodko.utils.TimeUtils;
 import ua.nure.prykhodko.utils.Validation;
 
@@ -19,6 +21,13 @@ import java.util.List;
 
 @WebServlet("/admin/stationEdit/edit")
 public class StationEditServlet extends HttpServlet {
+    private static final Logger log = Logger.getLogger(StationEditServlet.class);
+
+    @Override
+    public void init() throws ServletException {
+        log.info(Messages.INFO_ENTER);
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ServletContext servletContext = req.getServletContext();
@@ -28,6 +37,7 @@ public class StationEditServlet extends HttpServlet {
         List<Station> stationList;
         if (req.getParameter("station_choose") == null) {
             stationList = stationDAO.getStationRoute(station_name);
+            log.trace(Messages.TRACE_DELETE_ROUTE_FROM_STATION_ROUTE+stationList);
             if (stationList != null) {
                 req.setAttribute("routeList", stationList);
                 req.setAttribute("input", true);
@@ -39,6 +49,8 @@ public class StationEditServlet extends HttpServlet {
         } else {
             String name = req.getParameter("name");
             int id = stationDAO.getEntityID(name);
+            log.trace(Messages.TRACE_STATION_FOUND+id);
+
             String route_id = req.getParameter("route_id");
             String arrive_time = req.getParameter("arrive_time");
             String depart_time = req.getParameter("depart_time");
@@ -135,4 +147,9 @@ public class StationEditServlet extends HttpServlet {
             resp.sendRedirect("/admin");
         }
     }
+    @Override
+    public void destroy() {
+        super.destroy();
+    }
+
 }

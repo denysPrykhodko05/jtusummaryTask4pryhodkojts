@@ -50,7 +50,7 @@
   <!--Filter for station edit-->
   <filter>
     <filter-name>StationEditFilter</filter-name>
-    <filter-class>ua.nure.prykhodko.filter.ControllerStationEdit</filter-class>
+    <filter-class>ua.nure.prykhodko.filter.StationEditFilter</filter-class>
   </filter>
 
   <filter-mapping>
@@ -101,5 +101,19 @@
     <url-pattern>/registration</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>Log4jInit</servlet-name>
+    <servlet-class>apigw.Log4jInit</servlet-class>
+    <init-param>
+      <param-name>logfile</param-name>
+      <param-value>WEB-INF/log4j.properties</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>Log4jInit</servlet-name>
+    <url-pattern>/Log4jInit</url-pattern>
+  </servlet-mapping>
 
 </web-app>

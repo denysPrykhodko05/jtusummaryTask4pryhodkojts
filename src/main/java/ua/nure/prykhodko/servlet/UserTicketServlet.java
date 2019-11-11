@@ -1,8 +1,10 @@
 package ua.nure.prykhodko.servlet;
 
+import org.apache.log4j.Logger;
 import ua.nure.prykhodko.dao.SqlDAO.TicketDAO;
 import ua.nure.prykhodko.dao.SqlDAO.UserDAO;
 import ua.nure.prykhodko.bean.BoughtTicket;
+import ua.nure.prykhodko.exception.Messages;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -15,6 +17,7 @@ import java.io.IOException;
 
 @WebServlet("/profile/ticket")
 public class UserTicketServlet extends HttpServlet {
+    private static final Logger log = Logger.getLogger(UserTicketServlet.class);
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ServletContext servletContext = req.getServletContext();
@@ -27,13 +30,9 @@ public class UserTicketServlet extends HttpServlet {
         int ticket_id = userDAO.getTicketId(login);
 
         bt = ticketDAO.getTicketById(ticket_id);
+        log.trace(Messages.TRACE_TICKET_FOUND+bt);
 
         req.setAttribute("ticket", bt);
         req.getRequestDispatcher("/jsp/TicketPage.jsp").forward(req,resp);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
     }
 }

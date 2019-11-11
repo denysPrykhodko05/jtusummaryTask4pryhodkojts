@@ -65,7 +65,7 @@ public class TimeUtils {
         sb.append("1970-01-01").append(" ").append(time_str);
         sb1.append("1970-01-01").append(" ").append(routeTime_str);
         Long timeDiff = Timestamp.valueOf(sb1.toString()).getTime() - Timestamp.valueOf(sb.toString()).getTime();
-        return timeDiff > 0;
+        return timeDiff >= 0;
     }
 
     public static boolean compareTimeSation(Timestamp to, Timestamp from) {
@@ -74,7 +74,7 @@ public class TimeUtils {
     }
 
     public static Timestamp parseStringToTimestamp(String date, String time){
-        if (date!=null && time!=null) {
+        if (date!=null && time!=null && !time.equals("") && !date.equals("")) {
             StringBuilder sb = new StringBuilder();
             sb.append(date).append(" ").append(time).append(":00").append(".0");
             return Timestamp.valueOf(sb.toString());

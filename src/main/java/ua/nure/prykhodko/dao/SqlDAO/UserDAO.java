@@ -36,7 +36,7 @@ public class UserDAO implements CrudDAO<User, Integer> , userDAO {
             statement = con.createStatement();
             rs = statement.executeQuery(SQL_FIND_ALL_USERS);
             while (rs.next()) {
-                allUsers.add(parseUser(rs));
+                allUsers.add(buildUser(rs));
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
@@ -157,7 +157,7 @@ public class UserDAO implements CrudDAO<User, Integer> , userDAO {
      * @throws SQLException
      */
     @Override
-    public User parseUser(ResultSet resultSet) throws SQLException {
+    public User buildUser(ResultSet resultSet) throws SQLException {
         User user = new User();
         user.setId(resultSet.getInt(Fields.ENTITY_ID));
         user.setLogin(resultSet.getString(Fields.USER_LOGIN));
@@ -184,7 +184,7 @@ public class UserDAO implements CrudDAO<User, Integer> , userDAO {
             preparedStatement.setString(1, login);
             rs=preparedStatement.executeQuery();
             while (rs.next()){
-              return parseUser(rs);
+              return buildUser(rs);
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);

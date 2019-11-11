@@ -2,15 +2,16 @@ package ua.nure.prykhodko.entity;
 
 public class Train {
     private int id;
-    private int economy_class;
+    private int economyClass;
     private int compartment;
     private int common;
-    private int bought_places_economy;
-    private int bought_places_compartment;
-    private int bought_places_common;
+    private int boughtPlacesEconomy;
+    private int boughtPlacesCompartment;
+    private int boughtPlacesCommon;
 
-    public Train(int economy_class, int compartment, int common){
-        this.economy_class = economy_class;
+    public Train(int id, int economyClass, int compartment, int common){
+        this.id = id;
+        this.economyClass = economyClass;
         this.compartment = compartment;
         this.common = common;
     }
@@ -27,36 +28,36 @@ public class Train {
         this.id = id;
     }
 
-    public int getBought_places_economy() {
-        return bought_places_economy;
+    public int getBoughtPlacesEconomy() {
+        return boughtPlacesEconomy;
     }
 
-    public void setBought_places_economy(int bought_places_economy) {
-        this.bought_places_economy = bought_places_economy;
+    public void setBoughtPlacesEconomy(int boughtPlacesEconomy) {
+        this.boughtPlacesEconomy = boughtPlacesEconomy;
     }
 
-    public int getBought_places_compartment() {
-        return bought_places_compartment;
+    public int getBoughtPlacesCompartment() {
+        return boughtPlacesCompartment;
     }
 
-    public void setBought_places_compartment(int bought_places_compartment) {
-        this.bought_places_compartment = bought_places_compartment;
+    public void setBoughtPlacesCompartment(int boughtPlacesCompartment) {
+        this.boughtPlacesCompartment = boughtPlacesCompartment;
     }
 
-    public int getBought_places_common() {
-        return bought_places_common;
+    public int getBoughtPlacesCommon() {
+        return boughtPlacesCommon;
     }
 
-    public void setBought_places_common(int bought_places_common) {
-        this.bought_places_common = bought_places_common;
+    public void setBoughtPlacesCommon(int boughtPlacesCommon) {
+        this.boughtPlacesCommon = boughtPlacesCommon;
     }
 
-    public int getEconomy_class() {
-        return economy_class;
+    public int getEconomyClass() {
+        return economyClass;
     }
 
-    public void setEconomy_class(int economy_class) {
-        this.economy_class = economy_class;
+    public void setEconomyClass(int economyClass) {
+        this.economyClass = economyClass;
     }
 
     public int getCompartment() {

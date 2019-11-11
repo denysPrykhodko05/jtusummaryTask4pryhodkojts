@@ -11,9 +11,4 @@ public class AdminPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("/jsp/AdminPage.jsp").forward(req,resp);
     }
-
-    @Override
-    public void init() throws ServletException {
-        super.init();
-    }
 }

@@ -110,7 +110,7 @@ public class TrainDAO implements CrudDAO<Train, Integer> {
         train.setId(rs.getInt(Fields.ENTITY_ID));
         train.setCommon(rs.getInt(Fields.TRAIN_AMOUNT_OF_COMMON));
         train.setCompartment(rs.getInt(Fields.TRAIN_AMOUNT_OF_COMPARTMENT));
-        train.setEconomy_class(rs.getInt(Fields.TRAIN_AMOUNT_OF_ECONOMY_CLASS));
+        train.setEconomyClass(rs.getInt(Fields.TRAIN_AMOUNT_OF_ECONOMY_CLASS));
         return train;
     }
     private SoldPlaces parseSoldPlaces(ResultSet rs) throws SQLException {

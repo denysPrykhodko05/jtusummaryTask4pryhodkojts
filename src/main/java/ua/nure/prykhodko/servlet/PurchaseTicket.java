@@ -1,11 +1,13 @@
 package ua.nure.prykhodko.servlet;
 
+import org.apache.log4j.Logger;
 import ua.nure.prykhodko.dao.SqlDAO.TicketDAO;
 import ua.nure.prykhodko.dao.SqlDAO.TrainDAO;
 import ua.nure.prykhodko.dao.SqlDAO.UserDAO;
 import ua.nure.prykhodko.bean.BoughtTicket;
 import ua.nure.prykhodko.bean.SoldPlaces;
 import ua.nure.prykhodko.entity.Train;
+import ua.nure.prykhodko.exception.Messages;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -20,6 +22,7 @@ import java.util.List;
 
 @WebServlet("/purchaseTicket")
 public class PurchaseTicket extends HttpServlet {
+    private static final Logger log = Logger.getLogger(PurchaseTicket.class);
     private String id;
     private String compartment;
     private String common;
@@ -30,17 +33,21 @@ public class PurchaseTicket extends HttpServlet {
     private String arrive_time;
     private String depart_time;
 
+    @Override
+    public void init() throws ServletException {
+        log.info(Messages.INFO_ENTER);
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ServletContext servletContext = req.getServletContext();
         TrainDAO trainDAO = (TrainDAO) servletContext.getAttribute("trainDAO");
-        TicketDAO ticketDAO = (TicketDAO) servletContext.getAttribute("ticketDAO");
         Train train;
 
 
         stringInit(req);
         train = trainDAO.getEntityById(Integer.parseInt(id));
+        log.trace(Messages.TRACE_FOUND_TRAIN + train);
         req.setAttribute("trainId", id);
         if (compartment != null) {
             req.setAttribute("compartment", compartment);
@@ -52,7 +59,7 @@ public class PurchaseTicket extends HttpServlet {
         }
         if (economy_class != null) {
             req.setAttribute("economy_class", economy_class);
-            req.setAttribute("amount_economy_carriages", train.getEconomy_class());
+            req.setAttribute("amount_economy_carriages", train.getEconomyClass());
         }
         reqInit(req);
         req.getRequestDispatcher("jsp/PurchaseTicketPage.jsp").forward(req, resp);
@@ -76,10 +83,12 @@ public class PurchaseTicket extends HttpServlet {
 
         train = trainDAO.getEntityById(Integer.parseInt(id));
         userMoney = userDAO.getCountByLogin((String) session.getAttribute("login"));
+        log.trace(Messages.TRACE_USER_COUNT+userMoney);
 
         if (userMoney >= Double.parseDouble(price)) {
             List<SoldPlaces> soldPlacesList = null;
             soldPlacesList = trainDAO.getEmptyPlacesByTrain(train, Timestamp.valueOf(depart_time), from, to);
+            log.trace(Messages.TRACE_EMPTY_PLACES+soldPlacesList);
 
             for (SoldPlaces place : soldPlacesList) {
                 if (place.getPlace() > max) {
@@ -102,7 +111,7 @@ public class PurchaseTicket extends HttpServlet {
                     req.setAttribute("amount_compartment_carriages", train.getCompartment());
                 }
                 if (economy_class!=null) {
-                    req.setAttribute("amount_economy_carriages", train.getEconomy_class());
+                    req.setAttribute("amount_economy_carriages", train.getEconomyClass());
                 }
                 req.setAttribute("errorFullCarriage", true);
                 req.getRequestDispatcher("jsp/PurchaseTicketPage.jsp").forward(req, resp);
@@ -118,9 +127,11 @@ public class PurchaseTicket extends HttpServlet {
                 boughtTicket.setFinal_station(to);
                 if (ticketDAO.buyTicket_train(boughtTicket)) {
                     int id = ticketDAO.getTicketId(boughtTicket);
+                    log.trace(Messages.TRACE_TICKET_FOUND+id);
                     double userMoneyNew = userMoney - Double.parseDouble(price);
                     ticketDAO.buyTicket_user(id, (String) session.getAttribute("login"));
                     userDAO.updateCountByLogin(userMoneyNew, (String) session.getAttribute("login"));
+                    log.trace(Messages.TRACE_SESSION_COUNT+userMoneyNew);
                     resp.sendRedirect("/profile/ticket");
                 }
             }
@@ -140,7 +151,6 @@ public class PurchaseTicket extends HttpServlet {
         req.setAttribute("price", price);
         req.setAttribute("arrive_time", arrive_time);
         req.setAttribute("depart_time", depart_time);
-        //   depart_time = (String) req.getParameter("depart_time");
     }
 
     private void stringInit(HttpServletRequest req) {
@@ -168,5 +178,11 @@ public class PurchaseTicket extends HttpServlet {
         }
         return null;
     }
+
+    @Override
+    public void destroy() {
+        log.trace(Messages.INFO_EXIT);
+    }
+
 
 }

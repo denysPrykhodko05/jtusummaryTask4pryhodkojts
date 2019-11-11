@@ -1,13 +1,18 @@
 package ua.nure.prykhodko.dao.SqlDAO;
 
+import com.mysql.cj.exceptions.ClosedOnExpiredPasswordException;
+import org.apache.log4j.Logger;
 import ua.nure.prykhodko.constants.Fields;
 import ua.nure.prykhodko.entity.Station;
+import ua.nure.prykhodko.exception.Messages;
+import ua.nure.prykhodko.servlet.AddRouteServlet;
 import ua.nure.prykhodko.utils.StationComparator;
 
 import java.sql.*;
 import java.util.*;
 
 public class StationDAO implements CrudDAO<Station, Integer> {
+    private static final Logger log = Logger.getLogger(AddRouteServlet.class);
 
     private static final String SQL_GET_STATION_BY_NAME = "SELECT * FROM station WHERE name=(?)";
     private static final String SQL_GET_TIME_FOR_STATION_BY_ID = "SELECT arrive_time, depart_time FROM station_route WHERE station_id=(?) and route_id=(?)";
@@ -44,7 +49,10 @@ public class StationDAO implements CrudDAO<Station, Integer> {
             pstm.setInt(2, entity.getId());
             pstm.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            ConnectionPool.getInstance().rollback(con);
+            log.trace(Messages.ERR_CANNOT_UPDATE_STATION);
+        }finally {
+            ConnectionPool.getInstance().close(con,pstm,rs);
         }
         return null;
     }
@@ -64,7 +72,7 @@ public class StationDAO implements CrudDAO<Station, Integer> {
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.trace(Messages.ERR_CANNOT_OBTAIN_STATION);
         } finally {
             ConnectionPool.getInstance().close(con, pstm, rs);
         }
@@ -95,7 +103,7 @@ public class StationDAO implements CrudDAO<Station, Integer> {
             }
             return flag ? stationList : null;
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.trace(Messages.ERR_CANNOT_OBTAIN_STATIONROUTE);
         }
         return null;
     }
@@ -117,7 +125,10 @@ public class StationDAO implements CrudDAO<Station, Integer> {
                 station.setDepart_time(rs.getTimestamp(Fields.STATION_DEPART_TIME, cal));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ConnectionPool.getInstance().rollback(con);
+            log.trace(Messages.ERR_CANNOT_OBTAIN_STATION_TIME);
+        }finally {
+            ConnectionPool.getInstance().close(con,pstm,rs);
         }
     }
 
@@ -142,7 +153,10 @@ public class StationDAO implements CrudDAO<Station, Integer> {
                 return new Station(rs.getInt(1), rs.getString(2));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ConnectionPool.getInstance().rollback(con);
+            log.trace(Messages.ERR_CANNOT_OBTAIN_STATION_ID);
+        }finally {
+            ConnectionPool.getInstance().close(con,pstm,rs);
         }
 
 
@@ -180,7 +194,7 @@ public class StationDAO implements CrudDAO<Station, Integer> {
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.trace(Messages.ERR_CANNOT_OBTAIN_STATION_TIME);
         } finally {
             ConnectionPool.getInstance().close(con, pstm, rs);
         }
@@ -206,7 +220,7 @@ public class StationDAO implements CrudDAO<Station, Integer> {
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.trace(Messages.ERR_CANNOT_DELETE_STATION);
         } finally {
             ConnectionPool.getInstance().close(con, pstm, rs);
         }
@@ -225,7 +239,7 @@ public class StationDAO implements CrudDAO<Station, Integer> {
             return pstm.executeUpdate() == 1;
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.trace(Messages.ERR_CANNOT_ADD_STATION);
         } finally {
             ConnectionPool.getInstance().close(con, pstm, rs);
         }
@@ -254,7 +268,7 @@ public class StationDAO implements CrudDAO<Station, Integer> {
             }
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.trace(Messages.ERR_CANNOT_OBTAIN_STATION_NAME);
         } finally {
             ConnectionPool.getInstance().close(con, pstm, rs);
         }
@@ -291,7 +305,7 @@ public class StationDAO implements CrudDAO<Station, Integer> {
             return stationTreeSet;
         } catch (SQLException e) {
             ConnectionPool.getInstance().rollback(con);
-            e.printStackTrace();
+            log.trace(Messages.ERR_CANNOT_OBTAIN_STATION);
         } finally {
             ConnectionPool.getInstance().close(con, pstm, rs);
         }
